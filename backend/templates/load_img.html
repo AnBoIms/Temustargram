@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Image Loader</title>
+    <style>
+        #responseImageContainer img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+        }
+        #responseMessage {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Result Loader</h1>
+
+    <!-- Select Form: IDs 선택 후 전송 -->
+    <form id="selectForm">
+        <label for="selectedIds">Enter Selected IDs (comma separated):</label>
+        <input type="text" id="selectedIds" name="selected_ids" placeholder="1,2,4" required>
+        <button type="submit">Load Result</button>
+    </form>
+
+    <!-- 결과 이미지 및 메시지 표시 영역 -->
+    <div id="responseMessage"></div>
+    <div id="responseImageContainer"></div>
+
+    <script>
+        document.getElementById('selectForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // 기본 폼 제출 방지
+            
+            const selectedIdsInput = document.getElementById('selectedIds').value;
+            const selectedIdsArray = selectedIdsInput.split(',').map(id => parseInt(id.trim())); // ID 배열 생성
+
+            try {
+                const response = await fetch('http://localhost:5000/load_result', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ selected_ids: selectedIdsArray })
+                });
+
+                const result = await response.json();
+
+                if (result.isSuccess) {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = `data:image/png;base64,${result.result}`; // Base64 이미지 표시
+
+                    const container = document.getElementById('responseImageContainer');
+                    container.innerHTML = ''; // 기존 이미지 삭제
+                    container.appendChild(imgElement);
+
+                    document.getElementById('responseMessage').innerText = `Message: ${result.message}`;
+                } else {
+                    document.getElementById('responseMessage').innerText = `Error: ${result.message}`;
+                }
+
+            } catch (error) {
+                console.error('Error fetching result:', error);
+                document.getElementById('responseMessage').innerText = 'Error fetching result';
+            }
+        });
+    </script>
+</body>
+</html>
