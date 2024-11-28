@@ -1,10 +1,13 @@
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 import os
 import logging
 import json
 import base64
 
 app = Flask(__name__)
+CORS(app)
+
 IMAGE_FOLDER = './static' 
 os.makedirs(IMAGE_FOLDER, exist_ok=True) 
 
