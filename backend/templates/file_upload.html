@@ -14,6 +14,10 @@
     <div id="responseMessage"></div>
     <div id="objectDetails"></div> <!-- objects 출력 영역 추가 -->
 
+    <!-- 업로드 후 서버에서 받은 이미지 표시 -->
+    <h2>Uploaded and Processed Image:</h2>
+    <img id="uploadedImage" src="" alt="Processed Image" style="max-width: 300px; display: none;"/>
+
     <script>
         document.getElementById('uploadForm').addEventListener('submit', async (event) => {
             event.preventDefault(); // 폼 제출 기본 동작 방지
@@ -23,6 +27,7 @@
             formData.append('file', fileInput.files[0]);
 
             try {
+                // 서버로 이미지 업로드
                 const response = await fetch('http://localhost:5000/upload', {
                     method: 'POST',
                     body: formData
@@ -49,6 +54,12 @@
                     } else {
                         document.getElementById('objectDetails').innerText = 'No objects detected.';
                     }
+
+                    // 서버에서 받은 이미지를 img 태그에 넣어 표시
+                    const uploadedImage = document.getElementById('uploadedImage');
+                    uploadedImage.src = `data:image/png;base64,${result.img}`; // 서버에서 받은 base64 이미지
+                    uploadedImage.style.display = 'block'; // 이미지 표시
+
                 } else {
                     const errorData = await response.json();
                     console.log('Error JSON:', errorData); 
