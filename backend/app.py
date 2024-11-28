@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO)
 @app.route('/')
 def hello_world():
     app.logger.info("Root endpoint accessed")
-    return render_template('load_img.html')
+    return render_template('file_upload.html')
 
 # 이미지 업로드
 @app.route('/upload', methods=['POST'])
@@ -42,12 +42,15 @@ def upload():
     }] #example
     with open(os.path.join(IMAGE_FOLDER, 'objects.json'), 'w', encoding='utf-8') as json_file:
         json.dump(objects_data, json_file, ensure_ascii=False, indent=4)
-
+    with open(file_path, "rb") as image_file:
+        encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
     return jsonify({
         "isSuccess": True,
         "message": "File uploaded successfully",
-        "objects":objects_data
-    }),200
+        "objects": objects_data,
+        "img": encoded_image  # Base64 인코딩된 이미지
+    }), 200
+
 
 @app.route('/load_result', methods=['POST'])
 def load_result():
@@ -57,7 +60,16 @@ def load_result():
         
         app.logger.info(f"Received IDs: {selected_ids}")
 
-        # 중간 처리 부분 (선형 변환, CRAFT, SRNet 등)은 여기에 추가
+        # 선택한 id에 한해서 이미지 crop하여 저장
+        # 만약 type이 id_card이면 crop 후 선형변환해서 저장(static에 id별로 directory 나눠서).
+        # crop한 이미지들의 img_path를 json에 추가
+        # Craft에 img_path를 넘김(docker-compose-volumn에 공유폴더로)
+        # response로 text detection된 좌표 response로 받고, 좌표대로 하위 directory에 잘라서 저장
+        # 이때 detection된 좌표들 및 image_path json 하위 그룹에 text_regions으로 저장
+        # 자른 이미지 path를 SRNet으로 넘김
+        # 변환된 text 이미지 파일을 원본 text 이미지 파일과 같은 directory에 다른 이름으로 저장
+        # OD 이미지에 좌표대로 합성
+        # 원본 이미지에 OD 이미지 합성 후 result.png로 저장
 
         result_image_path = os.path.join(IMAGE_FOLDER, 'result.png')
         
