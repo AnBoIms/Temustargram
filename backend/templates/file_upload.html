@@ -12,6 +12,7 @@
         <button type="submit">Upload Image</button>
     </form>
     <div id="responseMessage"></div>
+    <div id="objectDetails"></div> <!-- objects 출력 영역 추가 -->
 
     <script>
         document.getElementById('uploadForm').addEventListener('submit', async (event) => {
@@ -32,6 +33,22 @@
                     console.log('Response JSON:', result); 
                     document.getElementById('responseMessage').innerText = 
                         `Message: ${result.message}, Success: ${result.isSuccess}`;
+                    
+                    // objects 배열 처리
+                    if (result.objects && result.objects.length > 0) {
+                        let objectDetailsHTML = '<h2>Detected Objects:</h2>';
+                        objectDetailsHTML += '<ul>';
+                        result.objects.forEach(obj => {
+                            objectDetailsHTML += `
+                                <li>
+                                    ID: ${obj.id}, Type: ${obj.type}, Polygon: ${JSON.stringify(obj.polygon)}
+                                </li>`;
+                        });
+                        objectDetailsHTML += '</ul>';
+                        document.getElementById('objectDetails').innerHTML = objectDetailsHTML;
+                    } else {
+                        document.getElementById('objectDetails').innerText = 'No objects detected.';
+                    }
                 } else {
                     const errorData = await response.json();
                     console.log('Error JSON:', errorData); 
