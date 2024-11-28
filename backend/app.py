@@ -4,6 +4,7 @@ import os
 import logging
 import json
 import base64
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -29,28 +30,39 @@ def upload():
     if file.filename == '':
         return jsonify({"isSuccess": False, "message": "No selected file"}),404
     
-    filename = 'origin.png'
+    filename = file.filename
     file_path = os.path.join(IMAGE_FOLDER, filename)
     file.save(file_path)
     
-    #여기에 mmdetection, return 결과 json에 추가
-
-    objects_data = [{
-        "id": 1,
-        "type": "id_card",
-        "polygon": [[901, 2091], [1156, 1687], [1800, 2095], [1546, 2498]]
-    }] #example
-    with open(os.path.join(IMAGE_FOLDER, 'objects.json'), 'w', encoding='utf-8') as json_file:
-        json.dump(objects_data, json_file, ensure_ascii=False, indent=4)
-    with open(file_path, "rb") as image_file:
-        encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
-    return jsonify({
-        "isSuccess": True,
-        "message": "File uploaded successfully",
-        "objects": objects_data,
-        "img": encoded_image  # Base64 인코딩된 이미지
-    }), 200
-
+    server_host = request.host_url.strip("/") 
+    file_url = f"{server_host}/static/{filename}" 
+    
+    mmdetection_server_url = 'http://localhost:5001/predict'  
+    #docker-compose로 돌릴땐 아래 코드
+    # mmdetection_server_url = 'http://mmdetection:5001/predict'  
+    try:
+        response = requests.post(
+            mmdetection_server_url,
+            json={"image_path": file_url} 
+        )
+        response.raise_for_status() 
+        objects_data = response.json()
+        with open(os.path.join(IMAGE_FOLDER, 'objects.json'), 'w', encoding='utf-8') as json_file:
+            json.dump(objects_data, json_file, ensure_ascii=False, indent=4)
+        with open(file_path, "rb") as image_file:
+            encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+        return jsonify({
+            "isSuccess": True,
+            "message": "File uploaded successfully",
+            "objects": objects_data,
+            "img": encoded_image
+        }), 200
+    except requests.exceptions.RequestException as e:
+        app.logger.error(f"Error connecting to MMDetection server: {e}")
+        return jsonify({
+            "isSuccess": False,
+            "message": "Error connecting to detection server"
+        }), 500
 
 @app.route('/load_result', methods=['POST'])
 def load_result():
