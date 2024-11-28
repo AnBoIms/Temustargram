@@ -32,6 +32,5 @@
 
 ### **Docker Compose 빌드 및 실행**
 ```bash
-docker-compose build
-docker-compose up
+docker-compose up --build
 ```
