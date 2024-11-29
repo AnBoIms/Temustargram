@@ -32,6 +32,6 @@ def predict():
             "polygon": coords
         })
     return jsonify(objects_data), 200
-
+    
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5001, debug=True)
