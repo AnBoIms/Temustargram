@@ -1,0 +1,14 @@
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI";
+  }
+  
+  /* html {
+    /* height: 100%; 
+  } */
+  
+  body {
+    background-color: #fafafa;
+    height: 100%;
+  }
+  
