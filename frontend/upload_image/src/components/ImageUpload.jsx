@@ -4,10 +4,11 @@ const ImageUpload = () => {
     const [file, setFile] = useState(null);
     const [responseMessage, setResponseMessage] = useState('');
 
+
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
     };
-
+    
     const handleSubmit = async (event) => {
         event.preventDefault(); // 폼 제출 기본 동작 방지
 
@@ -19,25 +20,22 @@ const ImageUpload = () => {
         const formData = new FormData();
         formData.append('file', file);
 
-        try {
-            const response = await fetch('http://localhost:5000/upload', {
-                method: 'POST',
-                body: formData,
-            });
+    
+        const response = await fetch('http://localhost:5000/upload', {
+            method: 'POST',
+            body: formData,
+        });
 
-            if (response.ok) {
-                const result = await response.json();
-                console.log('Response JSON:', result);
-                setResponseMessage(`Message: ${result.message}, Success: ${result.isSuccess}`);
-            } else {
-                const errorData = await response.json();
-                console.log('Error JSON:', errorData);
-                setResponseMessage(`Error: ${errorData.message}`);
-            }
-        } catch (error) {
-            console.error('Error uploading file:', error);
-            setResponseMessage('Error uploading file');
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Response JSON:', result);
+            setResponseMessage(`Message: ${result.message}, Success: ${result.isSuccess}`);
+        } else {
+            const errorData = await response.json();
+            console.log('Error JSON:', errorData);
+            setResponseMessage(`Error: ${errorData.message}`);
         }
+      
     };
 
     return (
@@ -56,6 +54,7 @@ const ImageUpload = () => {
                 </div>
             </form>
             {responseMessage && <div id="responseMessage">{responseMessage}</div>}
+            
         </div>
     );
 };
