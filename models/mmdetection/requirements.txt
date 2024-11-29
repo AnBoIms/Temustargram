@@ -1,2 +1,17 @@
 Flask==2.2.5
 Flask-Cors==3.0.10  
+cython
+numpy
+matplotlib
+numpy
+pycocotools
+scipy
+shapely
+six
+terminaltables
+tqdm
+cityscapesscripts
+emoji
+fairscale
+imagecorruptions
+scikit-learn

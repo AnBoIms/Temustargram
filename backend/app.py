@@ -37,9 +37,9 @@ def upload():
     server_host = request.host_url.strip("/") 
     file_url = f"{server_host}/static/{filename}" 
     
-    mmdetection_server_url = 'http://localhost:5001/predict'  
+    # mmdetection_server_url = 'http://localhost:5001/predict'  
     #docker-compose로 돌릴땐 아래 코드
-    # mmdetection_server_url = 'http://mmdetection:5001/predict'  
+    mmdetection_server_url = 'http://mmdetection:5001/predict'  
     try:
         response = requests.post(
             mmdetection_server_url,

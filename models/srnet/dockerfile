@@ -1,5 +1,5 @@
-FROM python:3.8.2
-WORKDIR /mmdetection 
-COPY . /mmdetection 
+FROM python:3.6
+WORKDIR /srnet
+COPY . /srnet 
 RUN pip install --no-cache-dir -r requirements.txt
 CMD ["python", "app.py"]
