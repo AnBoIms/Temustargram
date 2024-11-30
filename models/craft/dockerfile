@@ -1,9 +1,5 @@
 FROM python:3.6
 WORKDIR /craft
-COPY . /craft 
-RUN apt-get update && apt-get install -y python3-pip python3-dev && \
-    pip3 install --upgrade pip && \
-    pip3 install torch==0.4.1+cpu torchvision==0.2.1+cpu -f https://download.pytorch.org/whl/legacy.html && \
-    pip3 install opencv-python==3.4.2.17 scikit-image==0.14.2 scipy==1.1.0 Flask==1.1.4 Flask-Cors==3.0.9
+COPY . /craft
 RUN pip install --no-cache-dir -r requirements.txt
 CMD ["python", "app.py"]
