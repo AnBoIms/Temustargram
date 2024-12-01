@@ -2,6 +2,7 @@ import { Component } from "react";
 import "../pages/Common.css";
 import "../pages/Main.css";
 import logoText from "../Components/Image/logo_text.png";
+import upload from "../Components/Image/24uploadIcon.png";
 
 class MainNav extends Component {
   render() {
@@ -21,6 +22,12 @@ class MainNav extends Component {
             <input type="search" placeholder="검색" />
           </div>
           <div className="link-right">
+          <a href="">
+              <img
+                className="upload-icon"
+                src={upload}
+              />
+            </a>
             <a href="">
               <img
                 className="search-icon"
