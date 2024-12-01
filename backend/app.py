@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
 from image_processing import crop_and_transform_object, crop_text_regions
 import numpy as np
@@ -20,7 +20,24 @@ logging.basicConfig(level=logging.INFO)
 @app.route('/')
 def hello_world():
     app.logger.info("Root endpoint accessed")
-    return render_template('file_upload.html')
+    return render_template('load_img.html')
+
+# 파일 제공 API
+@app.route('/static/<filename>', methods=['GET'])
+def get_file(filename):
+    file_path = os.path.join(IMAGE_FOLDER, filename)
+    if os.path.exists(file_path):
+        return send_file(file_path)
+    return jsonify({"message": "File not found"}), 404
+
+# 파일 업로드 API
+@app.route('/upload_static', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({"message": "No file provided"}), 400
+    file = request.files['file']
+    file.save(os.path.join(IMAGE_FOLDER, file.filename))
+    return jsonify({"message": "File uploaded successfully"}), 200
 
 # 이미지 업로드
 @app.route('/upload', methods=['POST'])
@@ -40,9 +57,9 @@ def upload():
     server_host = request.host_url.strip("/") 
     file_url = f"{server_host}/static/{filename}" 
     
-    # mmdetection_server_url = 'http://localhost:5001/predict'  
+    mmdetection_server_url = 'http://localhost:5001/predict'  
     # docker-compose로 돌릴땐 아래 코드
-    mmdetection_server_url = 'http://mmdetection:5001/predict'  
+    # mmdetection_server_url = 'http://mmdetection:5001/predict'  
     try:
         response = requests.post(
             mmdetection_server_url,
@@ -103,9 +120,9 @@ def load_result():
             json.dump(objects_data, json_file, ensure_ascii=False, indent=4)
 
         # craft로 보냄
-        # craft_server_url = 'http://localhost:5002/predict' 
+        craft_server_url = 'http://localhost:5002/predict' 
         # docker-compose로 돌릴땐 아래 코드  
-        craft_server_url = 'http://craft:5002/predict' 
+        # craft_server_url = 'http://craft:5002/predict' 
         response = requests.post(craft_server_url, json=selected_objects)
         response.raise_for_status()
         craft_response = response.json() 
@@ -133,6 +150,7 @@ def load_result():
 
         # 자른 이미지 path를 SRNet으로 넘김
         # 변환된 text 이미지 파일을 원본 text 이미지 파일과 같은 directory에 다른 이름으로 저장
+        
         # OD 이미지에 좌표대로 합성
         # 원본 이미지에 OD 이미지 합성 후 result.png로 저장
 
