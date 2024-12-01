@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO)
 @app.route('/')
 def hello_world():
     app.logger.info("Root endpoint accessed")
-    return render_template('load_img.html')
+    return render_template('file_upload.html')
 
 # 이미지 업로드
 @app.route('/upload', methods=['POST'])
@@ -40,9 +40,9 @@ def upload():
     server_host = request.host_url.strip("/") 
     file_url = f"{server_host}/static/{filename}" 
     
-    mmdetection_server_url = 'http://localhost:5001/predict'  
-    #docker-compose로 돌릴땐 아래 코드
-    # mmdetection_server_url = 'http://mmdetection:5001/predict'  
+    # mmdetection_server_url = 'http://localhost:5001/predict'  
+    # docker-compose로 돌릴땐 아래 코드
+    mmdetection_server_url = 'http://mmdetection:5001/predict'  
     try:
         response = requests.post(
             mmdetection_server_url,
@@ -103,8 +103,9 @@ def load_result():
             json.dump(objects_data, json_file, ensure_ascii=False, indent=4)
 
         # craft로 보냄
-        craft_server_url = 'http://localhost:5002/predict' 
-        # craft_server_url = 'http://craft:5002/predict' 
+        # craft_server_url = 'http://localhost:5002/predict' 
+        # docker-compose로 돌릴땐 아래 코드  
+        craft_server_url = 'http://craft:5002/predict' 
         response = requests.post(craft_server_url, json=selected_objects)
         response.raise_for_status()
         craft_response = response.json() 

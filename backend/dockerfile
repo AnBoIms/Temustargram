@@ -1,5 +1,9 @@
 FROM python:3.9
 WORKDIR /backend
 COPY . /backend
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    && apt-get clean
 RUN pip install --no-cache-dir -r requirements.txt
 CMD ["python", "app.py"]
