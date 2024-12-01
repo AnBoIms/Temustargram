@@ -239,8 +239,8 @@ body {
     opacity: 0.3;
     font-size: 14px;
     background: 0 0;
+    padding : 0;
     /*이걸 썼더니 버튼 배경색이 사라졌다!*/
-    outline: none;
   }
   
   .submitComment::placeholder {
@@ -440,6 +440,7 @@ body {
     height: 28px;
   }
   
+  .search-icon,
   .heart-icon,
   .mypage-icon {
     margin-left: 26px;
@@ -447,7 +448,8 @@ body {
   
   .search-icon,
   .heart-icon,
-  .mypage-icon {
+  .mypage-icon,
+  .upload_icon {
     width: 24px;
     height: 24px;
     cursor: pointer;
