@@ -5,8 +5,8 @@ services:
       context: ./backend
     ports:
       - "5000:5000"
-    volumes:
-      - ./backend/static:/app/static
+    # volumes:
+    #   - ./backend/static:/backend/static
     environment:
       - FLASK_ENV=development
     depends_on:
