@@ -2,10 +2,8 @@
 import os
 import numpy as np
 import cv2
-import imgproc
 from coordinates import parse_coordinates, group_by_y_coordinates, assign_regions
 
-# borrowed from https://github.com/lengstrom/fast-style-transfer/blob/master/src/utils.py
 def get_files(img_dir):
     imgs, masks, xmls = list_files(img_dir)
     return imgs, masks, xmls
@@ -86,21 +84,6 @@ def saveResult(img_file, img, boxes, dirname='./result/', verticals=None, texts=
                 f.write(strResult)
                 print(strResult)
 
-
-
-                # poly = poly.reshape(-1, 2)
-                # #cv2.polylines(img, [poly.reshape((-1, 1, 2))], True, color=(0, 0, 255), thickness=2)
-                # ptColor = (0, 255, 255)
-                # if verticals is not None:
-                #     if verticals[i]:
-                #         ptColor = (255, 0, 0)
-                #
-                # if texts is not None:
-                #     font = cv2.FONT_HERSHEY_SIMPLEX
-                #     font_scale = 0.5
-                #     cv2.putText(img, "{}".format(texts[i]), (poly[0][0]+1, poly[0][1]+1), font, font_scale, (0, 0, 0), thickness=1)
-                #     cv2.putText(img, "{}".format(texts[i]), tuple(poly[0]), font, font_scale, (0, 255, 255), thickness=1)
-
         if img is None:
             print("Error: Image is None")
             return
@@ -108,18 +91,7 @@ def saveResult(img_file, img, boxes, dirname='./result/', verticals=None, texts=
             #################
         txt_file = res_file  # 텍스트 파일 경로 수정
         coordinates = read_coordinates_from_txt(txt_file)
-        #
-        # coordinates = parse_coordinates(coordinate_data)
-        # grouped_coords = group_by_y_coordinates(coordinates, y_threshold=15)
-        # regions = assign_regions(grouped_coords)
-        #
-        # for region, coords in regions.items():
-        #     print(f"{region}: {coords} : {len(coords)}")
-
-            # 이미지를 불러옵니다 (예시로 500x500 크기 이미지 생성)
-        #img = np.ones((500, 500, 3), dtype=np.uint8) * 255  # 흰색 배경
-
-            # 각 좌표를 이미지에 폴리곤 형태로 그립니다.
+        
         for coords in coordinates:
             poly = np.array(coords).reshape((-1, 2))  # 좌표 배열을 (N, 2) 형태로 변환
            # cv2.polylines(img, [poly], isClosed=True, color=(0, 0, 255), thickness=2)  # 빨간색 선으로 다각형 그리기

@@ -1,8 +1,6 @@
 import numpy as np
 import cv2
 
-def distance(pt1, pt2):
-    return np.linalg.norm(np.array(pt1) - np.array(pt2))
 
 def read_coorTxt(file_path: str):
     """
