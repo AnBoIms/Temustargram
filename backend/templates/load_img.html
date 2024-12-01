@@ -14,28 +14,47 @@
             color: red;
             margin-top: 10px;
         }
+        .image-card {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        .image-card img {
+            max-width: 200px;
+            height: auto;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
     <h1>Image Result Loader</h1>
 
-    <!-- Select Form: IDs 선택 후 전송 -->
+    <!-- Form for selecting IDs -->
     <form id="selectForm">
         <label for="selectedIds">Enter Selected IDs (comma separated):</label>
         <input type="text" id="selectedIds" name="selected_ids" placeholder="1,2,4" required>
         <button type="submit">Load Result</button>
     </form>
 
-    <!-- 결과 이미지 및 메시지 표시 영역 -->
+    <!-- Response message -->
     <div id="responseMessage"></div>
+
+    <!-- Container for displaying response images -->
     <div id="responseImageContainer"></div>
 
     <script>
         document.getElementById('selectForm').addEventListener('submit', async (event) => {
-            event.preventDefault(); // 기본 폼 제출 방지
+            event.preventDefault(); // Prevent default form submission
             
             const selectedIdsInput = document.getElementById('selectedIds').value;
-            const selectedIdsArray = selectedIdsInput.split(',').map(id => parseInt(id.trim())); // ID 배열 생성
+            const selectedIdsArray = selectedIdsInput.split(',').map(id => parseInt(id.trim())); // Parse IDs
+            
+            const responseMessageElement = document.getElementById('responseMessage');
+            const responseImageContainer = document.getElementById('responseImageContainer');
+            
+            responseMessageElement.innerText = ''; // Clear previous messages
+            responseImageContainer.innerHTML = ''; // Clear previous images
 
             try {
                 const response = await fetch('http://localhost:5000/load_result', {
@@ -47,21 +66,13 @@
                 const result = await response.json();
 
                 if (result.isSuccess) {
-                    const imgElement = document.createElement('img');
-                    imgElement.src = `data:image/png;base64,${result.result}`; // Base64 이미지 표시
-
-                    const container = document.getElementById('responseImageContainer');
-                    container.innerHTML = ''; // 기존 이미지 삭제
-                    container.appendChild(imgElement);
-
-                    document.getElementById('responseMessage').innerText = `Message: ${result.message}`;
+                    responseMessageElement.innerText = `Message: ${result.message}`;
                 } else {
-                    document.getElementById('responseMessage').innerText = `Error: ${result.message}`;
+                    responseMessageElement.innerText = `Error: ${result.message}`;
                 }
-
             } catch (error) {
                 console.error('Error fetching result:', error);
-                document.getElementById('responseMessage').innerText = 'Error fetching result';
+                responseMessageElement.innerText = 'Error fetching result';
             }
         });
     </script>

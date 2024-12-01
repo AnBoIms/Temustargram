@@ -15,11 +15,12 @@ def predict():
     if not image_path:
         return jsonify({"error": "No image_path provided"}), 400
     
-    # MMDetection 모델 로직 수행 
+    # MMDetection 신분증 모델 로직 수행 
+    # MMDetection 간판 모델 로직 수행 
+
     # 일단은 신분증일 경우만 넣었어용
     detection_output = """
-    1 2,3 4,5 6,7 8
-    9 10,11 12,13 14,15 16
+    901 2091,1156 1687,1800 2095,1546 2498
     """  # dummy data~
 
     objects_data = []
