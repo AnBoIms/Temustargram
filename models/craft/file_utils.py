@@ -2,7 +2,7 @@
 import os
 import numpy as np
 import cv2
-from coordinates import parse_coordinates, group_by_y_coordinates, assign_regions
+# from coordinates import parse_coordinates, group_by_y_coordinates, assign_regions
 
 def get_files(img_dir):
     imgs, masks, xmls = list_files(img_dir)
