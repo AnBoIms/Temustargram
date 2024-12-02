@@ -1,12 +1,24 @@
 import { useState } from 'react';
+import "./Main.css";
 
 const ImageUpload = () => {
     const [file, setFile] = useState(null);
     const [responseMessage, setResponseMessage] = useState('');
+    const [imagePreview, setImagePreview] = useState(''); // 이미지 프리뷰 상태 추가
 
 
     const handleFileChange = (event) => {
-        setFile(event.target.files[0]);
+        const selectedFile = event.target.files[0];
+        setFile(selectedFile);
+
+        // 이미지 파일이 선택되었을 경우 미리보기 설정
+        if (selectedFile) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result); // 파일 읽기 완료 후 이미지 URL을 상태에 저장
+            };
+            reader.readAsDataURL(selectedFile); // 파일을 Data URL로 읽음
+        }    
     };
     
     const handleSubmit = async (event) => {
@@ -39,7 +51,7 @@ const ImageUpload = () => {
     };
 
     return (
-        <div>
+        <div className ="container">
             <h1>Image Upload</h1>
             <form onSubmit={handleSubmit}>
                 <input
@@ -53,6 +65,15 @@ const ImageUpload = () => {
 
                 </div>
             </form>
+
+            
+            {imagePreview && (
+                <div>
+                    <h3>Image Preview:</h3>
+                    <img src={imagePreview} alt="Image Preview" style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }} />
+                </div>
+            )}
+            
             {responseMessage && <div id="responseMessage">{responseMessage}</div>}
             
         </div>
