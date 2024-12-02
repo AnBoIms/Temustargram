@@ -92,7 +92,16 @@ def main():
         o_t = F.to_pil_image((o_t + 1)/2)
         o_b = F.to_pil_image((o_b + 1)/2)
         o_f = F.to_pil_image((o_f + 1)/2)
-                        
+        
+        ###자 이 부분에 크기를 조정하는 파일을 만들거에요~~
+        input_size = (i_s.shape[2], i_s.shape[3]) 
+        # o_f = F.resize((o_f + 1) / 2, input_size)
+        o_f = F.resize(o_f, input_size) 
+        
+        
+        
+        
+        #####              
         o_f.save(os.path.join(args.save_dir, name + 'o_f.png'))
 
         #Uncomment the following if you need to save the rest of the predictions
