@@ -22,7 +22,7 @@ class MainNav extends Component {
             <input type="search" placeholder="검색" />
           </div>
           <div className="link-right">
-          <a href="">
+            <a href="">
               <img
                 className="upload-icon"
                 src={upload}
