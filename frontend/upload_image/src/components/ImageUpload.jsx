@@ -45,12 +45,21 @@ const UploadBox = () => {
   const handleDrop = (event) => {
     event.preventDefault();
     setActive(false);
-
+  
     const file = event.dataTransfer.files[0];
     if (file) {
       processFile(file);
+  
+      // <input>과 동기화
+      const fileInput = document.querySelector(".file");
+      if (fileInput) {
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+      }
     }
   };
+  
 
   const handleUpload = ({ target }) => {
     const file = target.files[0];
@@ -79,7 +88,9 @@ const UploadBox = () => {
 
       if (response.ok) {
         const result = await response.json();
-        navigate("/Select"); // 업로드 성공 시 성공 페이지로 이동
+        console.log('Response JSON:', result); 
+
+        navigate("/Select", {state: {image : result.img, coor: result.objects}}); // 업로드 성공 시 성공 페이지로 이동
         setResponseMessage(`Upload successful: ${result.message}`);
       } else {
         const errorData = await response.json();
@@ -93,6 +104,9 @@ const UploadBox = () => {
 
   return (
     <div className="container">
+        <div className = "alert">
+          <h2>개인정보가 포함 여부를 검사할 사진을 선택해주세요.</h2>
+        </div>
         <div>
             <label
                 className={`preview${isActive ? " active" : ""}`}

@@ -1,9 +1,9 @@
 import { Component } from "react";
 import "../index.css";
 import "./MainNav.css";
-import logoText from "../../public/AnboimsLogo.png";
-import InstaLogo from "../../public/instagramLogo.png";
-import chatgptLogo from "../../public/chatgptLogo.png";
+import logoText from "../assets/AnboimsLogo.png";
+import InstaLogo from "../assets/instagramLogo.png";
+import chatgptLogo from "../assets/chatgptLogo.png";
 
 
 // import upload from "../Components/Image/24uploadIcon.png";
@@ -19,8 +19,8 @@ class MainNav extends Component {
                 </a>
                 <div className="slash"></div>
                 <div className="info">
-                  안보임스 홈페이지에 오신 것을 환영합니다!<br></br>
-                  개인정보를 가리고 싶은 이미지를 선택해주세요.
+                  당신의 사진을 안전하게~<br></br>
+                  안전보호 이미지 안보임스
                 </div>
             </div>
             <div className = "link-right"> 
