@@ -11,21 +11,24 @@ services:
       - FLASK_ENV=development
     depends_on:
       - mmdetection
-      - craft
-      - srnet
+      # - craft
+      # - srnet
 
   mmdetection:
     build:
       context: ./models/mmdetection
     ports:
       - "5001:5001"
-  craft:
-    build:
-      context: ./models/craft
-    ports:
-      - "5002:5002"
-  srnet:
-    build:
-      context: ./models/srnet
-    ports:
-      - "5003:5003"
+
+  # craft:
+  #   build:
+  #     context: ./models/craft
+  #   ports:
+  #     - "5002:5002"
+
+  # srnet:
+  #   build:
+  #     context: ./models/srnet
+  #   ports:
+  #     - "5003:5003"
+

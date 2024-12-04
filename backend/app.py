@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO)
 @app.route('/')
 def hello_world():
     app.logger.info("Root endpoint accessed")
-    return render_template('load_img.html')
+    return render_template('file_upload.html')
 
 # 파일 제공 API
 @app.route('/static/<filename>', methods=['GET'])
@@ -43,23 +43,25 @@ def upload_file():
 @app.route('/upload', methods=['POST'])
 def upload():
     if 'file' not in request.files:
-        return jsonify({"isSuccess": False, "message": "No file part"}),404
+        return jsonify({"isSuccess": False, "message": "No file part"}), 404
     
     file = request.files['file']
     
     if file.filename == '':
-        return jsonify({"isSuccess": False, "message": "No selected file"}),404
+        return jsonify({"isSuccess": False, "message": "No selected file"}), 404
     
     filename = 'origin.png'
     file_path = os.path.join(IMAGE_FOLDER, filename)
     file.save(file_path)
     
-    server_host = request.host_url.strip("/") 
-    file_url = f"{server_host}/static/{filename}" 
+    # Docker Compose에서 다른 서비스 이름을 사용할 수 있도록 URL 생성
+    server_host = "http://backend:5000"  # Docker Compose에서 이 컨테이너의 이름으로 설정
+    # server_host = "http://localhost:5000"  
+    file_url = f"{server_host}/static/{filename}"
     
-    mmdetection_server_url = 'http://localhost:5001/predict'  
-    # docker-compose로 돌릴땐 아래 코드
-    # mmdetection_server_url = 'http://mmdetection:5001/predict'  
+    mmdetection_server_url = 'http://mmdetection:5001/predict'  # Docker Compose 네트워크 이름
+    # mmdetection_server_url = 'http://localhost:5001/predict'  # Docker Compose 네트워크 이름
+    
     try:
         response = requests.post(
             mmdetection_server_url,
@@ -67,10 +69,15 @@ def upload():
         )
         response.raise_for_status() 
         objects_data = response.json()
+
+        # JSON 결과 저장
         with open(os.path.join(IMAGE_FOLDER, 'objects.json'), 'w', encoding='utf-8') as json_file:
             json.dump(objects_data, json_file, ensure_ascii=False, indent=4)
+
+        # 원본 이미지 Base64 인코딩
         with open(file_path, "rb") as image_file:
             encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+        
         return jsonify({
             "isSuccess": True,
             "message": "File uploaded successfully",
@@ -83,6 +90,7 @@ def upload():
             "isSuccess": False,
             "message": "Error connecting to detection server"
         }), 500
+
 
 @app.route('/load_result', methods=['POST'])
 def load_result():
