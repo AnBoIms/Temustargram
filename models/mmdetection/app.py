@@ -1,5 +1,9 @@
+from mmdet.apis import init_detector, inference_detector
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from idcard_output import get_coordinate
+import numpy as np
+import cv2
 import logging
 import requests
 import os
@@ -8,11 +12,17 @@ import shutil
 app = Flask(__name__)
 CORS(app)
 
-# 디렉토리 설정
 DOWNLOAD_FOLDER = './downloads'
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
 logging.basicConfig(level=logging.INFO)
+
+id_config_file = 'configs/anboims_dataset/id_mask-rcnn_r50-caffe_fpn_ms-poly-1x_anboimsdataset.py'
+sign_config_file = 'configs/anboims_dataset/sign_mask-rcnn_r50-caffe_fpn_ms-poly-1x_anboimsdataset.py'
+id_checkpoint_file = 'work_dirs/id_epoch_24.pth'
+sign_checkpoint_file = 'work_dirs/sign_epoch_24.pth'
+id_model = init_detector(id_config_file, id_checkpoint_file, device='cpu')
+sign_model = init_detector(sign_config_file, sign_checkpoint_file, device='cpu')
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -22,6 +32,7 @@ def predict():
         return jsonify({"error": "No image_path provided"}), 400
 
     try:
+        # 이미지 다운로드
         response = requests.get(image_path, stream=True)
         if response.status_code != 200:
             return jsonify({"error": "Failed to download image"}), 400
@@ -37,18 +48,55 @@ def predict():
         app.logger.error(f"Error downloading image: {e}")
         return jsonify({"error": "Error downloading image"}), 500
 
-    # MMDetection 로직 수행
-    detection_output = """
-    901 2091,1156 1687,1800 2095,1546 2498
-    """  # Dummy 데이터
+    ################################
+    # ID 모델 추론
+    id_result = inference_detector(id_model, local_image_path)
+    id_masks = id_result.pred_instances.masks.cpu().numpy()
+    id_convex_coordinates = []
 
+    for mask in id_masks:
+        if mask.sum() > 0:
+            segmentation_points = np.argwhere(mask > 0)
+            segmentation_points = [(x, y) for y, x in segmentation_points]
+            hull_points = get_coordinate(segmentation_points)
+            id_convex_coordinates.append(hull_points)
+
+    ################################
+    # Sign 모델 추론
+    sign_result = inference_detector(sign_model, local_image_path)
+    sign_masks = sign_result.pred_instances.masks.cpu().numpy()
+    sign_convex_coordinates = []
+
+    for mask in sign_masks:
+        if mask.sum() > 0:
+            segmentation_points = np.argwhere(mask > 0)
+            segmentation_points = [(x, y) for y, x in segmentation_points]
+            hull_points = get_coordinate(segmentation_points)
+            sign_convex_coordinates.append(hull_points)
+
+    ###############################
+    # ID Card 결과 처리
     objects_data = []
-    lines = detection_output.strip().split("\n")
-    for idx, line in enumerate(lines, start=1):
-        coords = [list(map(int, pair.split())) for pair in line.split(",")]
+
+    for idx, coords in enumerate(id_convex_coordinates, start=1):
         objects_data.append({
             "id": idx,
             "type": "id_card",
+            "polygon": coords
+        })
+
+    # Sign 결과에서 ID Card와 겹치는 객체 제거
+    id_polygons = [set(map(tuple, coords)) for coords in id_convex_coordinates]
+    filtered_sign_coordinates = []
+
+    for coords in sign_convex_coordinates:
+        if set(map(tuple, coords)) not in id_polygons:  # ID Card와 중복되지 않은 경우만 추가
+            filtered_sign_coordinates.append(coords)
+
+    for idx, coords in enumerate(filtered_sign_coordinates, start=len(id_convex_coordinates) + 1):
+        objects_data.append({
+            "id": idx,
+            "type": "sign",
             "polygon": coords
         })
 
@@ -61,7 +109,6 @@ def predict():
         app.logger.error(f"Error deleting image file: {e}")
 
     return response_data, 200
-
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5001, debug=True)
