@@ -96,11 +96,11 @@ def saveResult(img_file, img, boxes, dirname='./result/', verticals=None, texts=
             poly = np.array(coords).reshape((-1, 2))  # 좌표 배열을 (N, 2) 형태로 변환
            # cv2.polylines(img, [poly], isClosed=True, color=(0, 0, 255), thickness=2)  # 빨간색 선으로 다각형 그리기
 
-        for i, coords in enumerate(coordinates):
-            cropped_img = crop_box_area(img, coords)  # Crop the polygon region
-            cropped_img_file = os.path.join(res_dict, f"cropped_{i + 1}.jpg")  # Cropped image file
-            cv2.imwrite(cropped_img_file, cropped_img)  # Save cropped image
-            print(f"Cropped image saved: {cropped_img_file}")
+        # for i, coords in enumerate(coordinates):
+        #     cropped_img = crop_box_area(img, coords)  # Crop the polygon region
+        #     cropped_img_file = os.path.join(res_dict, f"cropped_{i + 1}.jpg")  # Cropped image file
+        #     cv2.imwrite(cropped_img_file, cropped_img)  # Save cropped image
+        #     print(f"Cropped image saved: {cropped_img_file}")
 
         # 결과 이미지를 파일로 저장
         cv2.imwrite(res_img_file, img)
