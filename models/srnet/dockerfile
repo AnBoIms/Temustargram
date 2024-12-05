@@ -3,3 +3,5 @@ WORKDIR /srnet
 COPY . /srnet 
 RUN pip install --no-cache-dir -r requirements.txt
 CMD ["python", "app.py"]
+## python3 predict.py --input_dir custom_feed/labels  --save_dir results --checkpoint logs/train_step-9000.model
+## 이렇게 실행하면 값이 출력이 됩니다. 지금 파일 구조상으로는 그래용
