@@ -40,7 +40,8 @@ def main():
     D1_solver = torch.optim.Adam(D1.parameters(), lr=cfg.learning_rate, betas = (cfg.beta1, cfg.beta2))
     D2_solver = torch.optim.Adam(D2.parameters(), lr=cfg.learning_rate, betas = (cfg.beta1, cfg.beta2))
 
-    checkpoint = torch.load(args.checkpoint)
+    checkpoint = torch.load(args.checkpoint,map_location=torch.device('cpu'))
+    G.load_state_dict(checkpoint['generator'])
     G.load_state_dict(checkpoint['generator'])
     D1.load_state_dict(checkpoint['discriminator1'])
     D2.load_state_dict(checkpoint['discriminator2'])
