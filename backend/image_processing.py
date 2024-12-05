@@ -4,7 +4,7 @@ import os
 
 def distance(pt1, pt2):
     return np.linalg.norm(np.array(pt1) - np.array(pt2))
-
+    
 def crop_and_transform_object(img, obj, results_dir):
     polygon = np.array(obj["polygon"], dtype=np.float32)
     id_type = obj["type"]

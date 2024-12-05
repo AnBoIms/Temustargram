@@ -14,14 +14,20 @@
 | **`models/`**           | AI 모델 파일 및 스크립트     | &nbsp;&nbsp;&nbsp;&nbsp;![AI Models](https://img.shields.io/badge/Models-FF6F00?logo=pytorch&logoColor=white) |
 | **`docker-compose.yml`**| Docker 컨테이너 설정         | &nbsp;&nbsp;&nbsp;&nbsp;![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)   |
 
-
 ---
 
-## **Results**
+## **PreView**
 *Prototype image 넣어주세요*
 
 ---
 
+## **Model Download**
+*Prototype image 넣어주세요*
+1. [여기](https://drive.google.com/drive/folders/1QVuWFJy_GSyU5vA_94a5pJOfaNVVFgUT?usp=drive_link)에서 모델 파일을 다운로드하고 아래 경로에 저장하세요
+* mmdetection : `models/mmdetection/work_dirs` 
+* craft : `models/craft` 
+* srnet : `models/srnet`
+---
 
 ## **프로젝트 구조**
 ![flow](https://github.com/user-attachments/assets/2b1787f5-7683-4caf-9bde-e153d6fb67cb)
