@@ -3,31 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Image Upload</title>
+    <title>Flask Image Upload and Object Selection</title>
+    <style>
+        #uploadedImage {
+            max-width: 300px;
+            display: none;
+            margin-top: 20px;
+        }
+        .image-card {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        .image-card img {
+            max-width: 200px;
+            height: auto;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+        #responseMessage {
+            margin-top: 10px;
+            color: red;
+        }
+    </style>
 </head>
 <body>
-    <h1>Image Upload</h1>
+    <h1>Image Upload and Object Selection</h1>
+
+    <!-- Image Upload Form -->
     <form id="uploadForm">
         <input type="file" id="fileInput" name="file" accept="image/*" required>
         <button type="submit">Upload Image</button>
     </form>
     <div id="responseMessage"></div>
-    <div id="objectDetails"></div> <!-- objects 출력 영역 추가 -->
 
-    <!-- 업로드 후 서버에서 받은 이미지 표시 -->
+    <!-- Uploaded Image and Objects -->
     <h2>Uploaded and Processed Image:</h2>
-    <img id="uploadedImage" src="" alt="Processed Image" style="max-width: 300px; display: none;"/>
+    <img id="uploadedImage" src="" alt="Processed Image">
+    <div id="objectDetails"></div>
+
+    <!-- Object Selection -->
+    <h2>Object Selection</h2>
+    <form id="selectForm" style="display: none;">
+        <label for="selectedIds">Enter Selected IDs (comma separated):</label>
+        <input type="text" id="selectedIds" name="selected_ids" placeholder="1,2,4" required>
+        <button type="submit">Load Result</button>
+    </form>
+
+    <!-- Result Image -->
+    <div id="responseImageContainer"></div>
 
     <script>
+        // Upload Image
         document.getElementById('uploadForm').addEventListener('submit', async (event) => {
-            event.preventDefault(); // 폼 제출 기본 동작 방지
-            
+            event.preventDefault();
+
             const fileInput = document.getElementById('fileInput');
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
 
             try {
-                // 서버로 이미지 업로드
                 const response = await fetch('http://localhost:5000/upload', {
                     method: 'POST',
                     body: formData
@@ -35,13 +70,11 @@
 
                 if (response.ok) {
                     const result = await response.json();
-                    console.log('Response JSON:', result); 
-                    document.getElementById('responseMessage').innerText = 
+                    document.getElementById('responseMessage').innerText =
                         `Message: ${result.message}, Success: ${result.isSuccess}`;
-                    
-                    // objects 배열 처리
+
                     if (result.objects && result.objects.length > 0) {
-                        let objectDetailsHTML = '<h2>Detected Objects:</h2>';
+                        let objectDetailsHTML = '<h3>Detected Objects:</h3>';
                         objectDetailsHTML += '<ul>';
                         result.objects.forEach(obj => {
                             objectDetailsHTML += `
@@ -51,25 +84,59 @@
                         });
                         objectDetailsHTML += '</ul>';
                         document.getElementById('objectDetails').innerHTML = objectDetailsHTML;
+
+                        document.getElementById('selectForm').style.display = 'block';
                     } else {
                         document.getElementById('objectDetails').innerText = 'No objects detected.';
                     }
 
-                    // 서버에서 받은 이미지를 img 태그에 넣어 표시
                     const uploadedImage = document.getElementById('uploadedImage');
-                    uploadedImage.src = `data:image/png;base64,${result.img}`; // 서버에서 받은 base64 이미지
-                    uploadedImage.style.display = 'block'; // 이미지 표시
-
+                    uploadedImage.src = `data:image/png;base64,${result.img}`;
+                    uploadedImage.style.display = 'block';
                 } else {
                     const errorData = await response.json();
-                    console.log('Error JSON:', errorData); 
-                    document.getElementById('responseMessage').innerText = 
+                    document.getElementById('responseMessage').innerText =
                         `Error: ${errorData.message}`;
                 }
-
             } catch (error) {
                 console.error('Error uploading file:', error);
                 document.getElementById('responseMessage').innerText = 'Error uploading file';
+            }
+        });
+
+        // Load Result
+        document.getElementById('selectForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const selectedIdsInput = document.getElementById('selectedIds').value;
+            const selectedIdsArray = selectedIdsInput.split(',').map(id => parseInt(id.trim()));
+
+            const responseMessageElement = document.getElementById('responseMessage');
+            const responseImageContainer = document.getElementById('responseImageContainer');
+
+            responseMessageElement.innerText = '';
+            responseImageContainer.innerHTML = '';
+
+            try {
+                const response = await fetch('http://localhost:5000/load_result', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ selected_ids: selectedIdsArray })
+                });
+
+                const result = await response.json();
+
+                if (result.isSuccess) {
+                    responseMessageElement.innerText = `Message: ${result.message}`;
+                    const resultImage = document.createElement('img');
+                    resultImage.src = `data:image/png;base64,${result.result}`;
+                    responseImageContainer.appendChild(resultImage);
+                } else {
+                    responseMessageElement.innerText = `Error: ${result.message}`;
+                }
+            } catch (error) {
+                console.error('Error fetching result:', error);
+                responseMessageElement.innerText = 'Error fetching result';
             }
         });
     </script>

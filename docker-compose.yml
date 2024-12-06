@@ -5,14 +5,14 @@ services:
       context: ./backend
     ports:
       - "5000:5000"
-    # volumes:
-    #   - ./backend/static:/backend/static
+    volumes:
+      - ./backend/static:/backend/static
     environment:
       - FLASK_ENV=development
     depends_on:
       - mmdetection
       # - craft
-      # - srnet
+      - srnet
 
   mmdetection:
     build:
@@ -26,9 +26,11 @@ services:
   #   ports:
   #     - "5002:5002"
 
-  # srnet:
-  #   build:
-  #     context: ./models/srnet
-  #   ports:
-  #     - "5003:5003"
+  srnet:
+    build:
+      context: ./models/srnet
+    ports:
+      - "5003:5003"
+    volumes:
+      - ./backend/static:/backend/static
 

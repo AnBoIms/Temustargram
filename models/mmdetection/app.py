@@ -71,7 +71,6 @@ def predict():
             hull_points = get_coordinate(segmentation_points)
             sign_convex_coordinates.append(hull_points)
 
-    # ID Card 결과 처리
     objects_data = []
 
     for idx, coords in enumerate(id_convex_coordinates, start=1):
@@ -81,7 +80,6 @@ def predict():
             "polygon": coords
         })
 
-    # ID Card의 다각형들을 Shapely Polygon으로 변환
     id_polygons = [Polygon(coords) for coords in id_convex_coordinates]
 
     filtered_sign_coordinates = []
@@ -92,11 +90,11 @@ def predict():
 
         # ID Card와 겹치는지 확인
         for id_polygon in id_polygons:
-            if sign_polygon.intersects(id_polygon):  # 다각형이 겹치거나 포함된 경우
+            if sign_polygon.intersects(id_polygon): 
                 overlap = True
                 break
 
-        if not overlap:  # 겹치지 않는 경우만 추가
+        if not overlap: 
             filtered_sign_coordinates.append(coords)
 
     for idx, coords in enumerate(filtered_sign_coordinates, start=len(id_convex_coordinates) + 1):
