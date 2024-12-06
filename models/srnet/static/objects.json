@@ -1,0 +1,508 @@
+[
+    {
+        "id": 1,
+        "polygon": [
+            [
+                159,
+                341
+            ],
+            [
+                326,
+                288
+            ],
+            [
+                338,
+                327
+            ],
+            [
+                171,
+                380
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/1_sign.png"
+    },
+    {
+        "id": 2,
+        "polygon": [
+            [
+                49,
+                317
+            ],
+            [
+                58,
+                110
+            ],
+            [
+                107,
+                112
+            ],
+            [
+                98,
+                320
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/2_sign.png"
+    },
+    {
+        "id": 3,
+        "polygon": [
+            [
+                166,
+                586
+            ],
+            [
+                296,
+                575
+            ],
+            [
+                300,
+                629
+            ],
+            [
+                171,
+                640
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/3_sign.png"
+    },
+    {
+        "id": 4,
+        "polygon": [
+            [
+                160,
+                448
+            ],
+            [
+                355,
+                408
+            ],
+            [
+                364,
+                450
+            ],
+            [
+                169,
+                490
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/4_sign.png"
+    },
+    {
+        "id": 5,
+        "polygon": [
+            [
+                144,
+                243
+            ],
+            [
+                388,
+                144
+            ],
+            [
+                403,
+                181
+            ],
+            [
+                159,
+                280
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/5_sign.png"
+    },
+    {
+        "id": 6,
+        "polygon": [
+            [
+                96,
+                441
+            ],
+            [
+                156,
+                438
+            ],
+            [
+                159,
+                503
+            ],
+            [
+                99,
+                506
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/6_sign.png"
+    },
+    {
+        "id": 7,
+        "polygon": [
+            [
+                90,
+                404
+            ],
+            [
+                157,
+                387
+            ],
+            [
+                169,
+                432
+            ],
+            [
+                101,
+                449
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/7_sign.png"
+    },
+    {
+        "id": 8,
+        "polygon": [
+            [
+                87,
+                263
+            ],
+            [
+                156,
+                234
+            ],
+            [
+                172,
+                272
+            ],
+            [
+                103,
+                301
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/8_sign.png"
+    },
+    {
+        "id": 9,
+        "polygon": [
+            [
+                20,
+                653
+            ],
+            [
+                86,
+                648
+            ],
+            [
+                89,
+                681
+            ],
+            [
+                23,
+                686
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/9_sign.png"
+    },
+    {
+        "id": 10,
+        "polygon": [
+            [
+                28,
+                450
+            ],
+            [
+                92,
+                434
+            ],
+            [
+                102,
+                474
+            ],
+            [
+                38,
+                490
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/10_sign.png"
+    },
+    {
+        "id": 11,
+        "polygon": [
+            [
+                102,
+                303
+            ],
+            [
+                151,
+                303
+            ],
+            [
+                151,
+                398
+            ],
+            [
+                102,
+                398
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/11_sign.png"
+    },
+    {
+        "id": 12,
+        "polygon": [
+            [
+                18,
+                371
+            ],
+            [
+                25,
+                233
+            ],
+            [
+                44,
+                234
+            ],
+            [
+                37,
+                372
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/12_sign.png"
+    },
+    {
+        "id": 13,
+        "polygon": [
+            [
+                175,
+                552
+            ],
+            [
+                385,
+                520
+            ],
+            [
+                390,
+                551
+            ],
+            [
+                179,
+                583
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/13_sign.png"
+    },
+    {
+        "id": 14,
+        "polygon": [
+            [
+                71,
+                542
+            ],
+            [
+                170,
+                524
+            ],
+            [
+                177,
+                560
+            ],
+            [
+                77,
+                578
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/14_sign.png"
+    },
+    {
+        "id": 15,
+        "polygon": [
+            [
+                71,
+                576
+            ],
+            [
+                152,
+                569
+            ],
+            [
+                158,
+                634
+            ],
+            [
+                77,
+                641
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/15_sign.png"
+    },
+    {
+        "id": 16,
+        "polygon": [
+            [
+                33,
+                103
+            ],
+            [
+                50,
+                103
+            ],
+            [
+                50,
+                143
+            ],
+            [
+                33,
+                143
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/16_sign.png"
+    },
+    {
+        "id": 17,
+        "polygon": [
+            [
+                44,
+                368
+            ],
+            [
+                98,
+                368
+            ],
+            [
+                98,
+                438
+            ],
+            [
+                44,
+                438
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/17_sign.png"
+    },
+    {
+        "id": 18,
+        "polygon": [
+            [
+                28,
+                239
+            ],
+            [
+                32,
+                188
+            ],
+            [
+                47,
+                189
+            ],
+            [
+                42,
+                240
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/18_sign.png"
+    },
+    {
+        "id": 19,
+        "polygon": [
+            [
+                25,
+                635
+            ],
+            [
+                28,
+                564
+            ],
+            [
+                36,
+                565
+            ],
+            [
+                33,
+                636
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/19_sign.png"
+    },
+    {
+        "id": 20,
+        "polygon": [
+            [
+                37,
+                548
+            ],
+            [
+                37,
+                482
+            ],
+            [
+                94,
+                482
+            ],
+            [
+                94,
+                548
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/20_sign.png"
+    },
+    {
+        "id": 21,
+        "polygon": [
+            [
+                4,
+                603
+            ],
+            [
+                19,
+                381
+            ],
+            [
+                40,
+                382
+            ],
+            [
+                25,
+                605
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/21_sign.png"
+    },
+    {
+        "id": 22,
+        "polygon": [
+            [
+                32,
+                635
+            ],
+            [
+                37,
+                554
+            ],
+            [
+                53,
+                555
+            ],
+            [
+                48,
+                636
+            ]
+        ],
+        "type": "sign",
+        "cropped_image_path": "http://backend:5000/static/cropped/22_sign.png"
+    }
+]
