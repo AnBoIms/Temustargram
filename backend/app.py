@@ -41,7 +41,6 @@ def upload_file():
 
 # 이미지 업로드
 @app.route('/upload', methods=['POST'])
-@app.route('/upload', methods=['POST'])
 def upload():
     if 'file' not in request.files:
         return jsonify({"isSuccess": False, "message": "No file part"}), 404
