@@ -75,3 +75,24 @@ def crop_text_regions(selected_objects, results_dir, server_host):
             cv2.imwrite(save_path, cropped_region)
 
             region["cropped_image_path"] = f"{server_host}/static/text_regions/{obj['id']}_region_{region_id}.png"
+
+def insert_image_final(original_image, new_image, polygon_coords, output_path):
+
+    target_coords = np.array(polygon_coords, dtype=np.float32)
+
+    h, w = new_image.shape[:2]
+    source_coords = np.array([[0, 0], [w, 0], [w, h], [0, h]], dtype=np.float32)
+
+    M = cv2.getPerspectiveTransform(source_coords, target_coords)
+
+    warped_image = cv2.warpPerspective(new_image, M, (original_image.shape[1], original_image.shape[0]))
+
+    mask = np.zeros_like(original_image, dtype=np.uint8)
+    cv2.fillPoly(mask, [np.int32(target_coords)], (255, 255, 255))
+
+    original_image = cv2.bitwise_and(original_image, cv2.bitwise_not(mask))
+
+    result_image = cv2.add(original_image, warped_image)
+
+    # 결과 저장
+    cv2.imwrite(output_path, result_image)
