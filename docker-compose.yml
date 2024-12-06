@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8'
 services:
   backend:
     build:
@@ -34,3 +34,10 @@ services:
     volumes:
       - ./backend/static:/backend/static
 
+  frontend:
+    build:
+      context: ./frontend/upload_image
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
