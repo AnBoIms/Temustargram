@@ -77,7 +77,8 @@ def upload():
         for obj in objects_data:
             save_path = crop_and_transform_object(original_image, obj, results_dir)
             file_name = os.path.basename(save_path)
-            image_url = f"{server_host}/static/cropped/{file_name}"
+            relative_path = save_path.replace('./static/', '')  # static 하위 경로 계산
+            image_url = f"{server_host}/static/{relative_path}"
             obj["cropped_image_path"] = image_url  # URL 저장
 
         # # CRAFT 요청: type이 "sign"인 객체만
@@ -125,6 +126,7 @@ def upload():
         return jsonify({"isSuccess": False, "message": "Internal Server Error"}), 500
 
 @app.route('/load_result', methods=['POST'])
+@app.route('/load_result', methods=['POST'])
 def load_result():
     try:
         data = request.get_json()
@@ -135,8 +137,43 @@ def load_result():
         with open(objects_json_path, 'r', encoding='utf-8') as json_file:
             objects_data = json.load(json_file)
 
-        # 선택된 객체 필터링
+        # 선택된 객체와 선택되지 않은 객체로 분리
         selected_objects = [obj for obj in objects_data if obj["id"] in selected_ids]
+        unselected_objects = [obj for obj in objects_data if obj["id"] not in selected_ids]
+
+        # 선택되지 않은 객체들의 크롭된 이미지 삭제
+        for obj in unselected_objects:
+            # cropped_image_path를 로컬 경로로 변환
+            cropped_image_path = obj["cropped_image_path"].replace("http://backend:5000/static/", "./static/")
+            cropped_image_path = os.path.abspath(cropped_image_path)  # 절대 경로로 변환
+            if os.path.exists(cropped_image_path):
+                os.remove(cropped_image_path)
+                app.logger.info(f"Deleted cropped image: {cropped_image_path}")
+            else:
+                app.logger.warning(f"Cropped image not found: {cropped_image_path}")
+
+        # 선택된 객체들만 JSON 파일에 저장
+        with open(objects_json_path, 'w', encoding='utf-8') as json_file:
+            json.dump(selected_objects, json_file, ensure_ascii=False, indent=4)
+            app.logger.info("Updated objects.json with selected objects")
+
+        # `cropped` 폴더 정리: sign, id_card 폴더만 유지
+        cropped_dir = os.path.join(IMAGE_FOLDER, 'cropped')
+        for item in os.listdir(cropped_dir):
+            item_path = os.path.join(cropped_dir, item)
+            if os.path.isdir(item_path) and item not in ['sign', 'id_card']:
+                # 불필요한 폴더 삭제
+                for root, dirs, files in os.walk(item_path, topdown=False):
+                    for name in files:
+                        os.remove(os.path.join(root, name))
+                    for name in dirs:
+                        os.rmdir(os.path.join(root, name))
+                os.rmdir(item_path)
+                app.logger.info(f"Removed unnecessary folder: {item_path}")
+            elif os.path.isfile(item_path):
+                # 불필요한 파일 삭제
+                os.remove(item_path)
+                app.logger.info(f"Removed file directly in cropped: {item_path}")
 
         result_image_path = os.path.join(IMAGE_FOLDER, 'result.png')
         if not os.path.exists(result_image_path):
@@ -148,13 +185,11 @@ def load_result():
         return jsonify({
             "isSuccess": True,
             "message": "Success",
-            "result": encoded_image,
-            "selected_objects": selected_objects
+            "result": encoded_image
         }), 200
     except Exception as e:
         app.logger.error(f"Error in load_result: {e}")
         return jsonify({"isSuccess": False, "message": "Internal Server Error"}), 500
 
-    
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

@@ -9,6 +9,10 @@ def crop_and_transform_object(img, obj, results_dir):
     polygon = np.array(obj["polygon"], dtype=np.float32)
     id_type = obj["type"]
 
+    # 분류된 저장 폴더 생성
+    type_dir = os.path.join(results_dir, id_type)
+    os.makedirs(type_dir, exist_ok=True)
+
     polygon = sorted(polygon, key=lambda p: p[0])  
     left_group = sorted(polygon[:2], key=lambda p: p[1])  
     right_group = sorted(polygon[2:], key=lambda p: p[1])  
@@ -38,14 +42,14 @@ def crop_and_transform_object(img, obj, results_dir):
     else:
         x, y, w, h = cv2.boundingRect(polygon)
         cropped_img = img[y:y+h, x:x+w]
-        save_path = os.path.join(results_dir, f'{obj["id"]}_{id_type}.png')
+        save_path = os.path.join(type_dir, f'{obj["id"]}_{id_type}.png')
         cv2.imwrite(save_path, cropped_img)
         return save_path
 
     M = cv2.getPerspectiveTransform(ordered_polygon, pts2)
     transformed_img = cv2.warpPerspective(img, M, (output_width, output_height))
 
-    save_path = os.path.join(results_dir, f'{obj["id"]}_{id_type}.png')
+    save_path = os.path.join(type_dir, f'{obj["id"]}_{id_type}.png')
     cv2.imwrite(save_path, transformed_img)
     return save_path
 
