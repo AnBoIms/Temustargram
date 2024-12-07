@@ -8,7 +8,7 @@ services:
     # volumes:
     #   - ./backend/static:/backend/static
     environment:
-      - FLASK_ENV=development
+      - FLASK_DEBUG=1
     depends_on:
       - mmdetection
       # - craft
@@ -20,11 +20,11 @@ services:
     ports:
       - "5001:5001"
 
-  # craft:
-  #   build:
-  #     context: ./models/craft
-  #   ports:
-  #     - "5002:5002"
+  craft:
+    build:
+      context: ./models/craft
+    ports:
+      - "5002:5002"
 
   # srnet:
   #   build:
