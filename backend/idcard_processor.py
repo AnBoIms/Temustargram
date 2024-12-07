@@ -62,7 +62,6 @@ def process_ocr_results(ocr_results):
                 name_box = (coords, text_cleaned)
                 closest_distance = distance
                 continue
-             
         
         # 주민등록번호 추출
         if re.match(r'^[0-9A-Za-z가-힣\-.,!?@#$%^&*()_+=]+$', text_cleaned):
@@ -72,13 +71,13 @@ def process_ocr_results(ocr_results):
                 address_start_y = (coords[0][1] + coords[2][1]) / 2
                 continue
             else:
-              first_box_top_y = first_resident_id_box[0][0][1]
-              current_box_top_y = coords[0][1]
-              if abs(current_box_top_y - first_box_top_y) > 10:
-                pass  
-              else:
-                resident_id_boxes.append(box)  
-                continue
+                first_box_top_y = first_resident_id_box[0][0][1]
+                current_box_top_y = coords[0][1]
+                if abs(current_box_top_y - first_box_top_y) > 10:
+                    pass  
+                else:
+                    resident_id_boxes.append(box)  
+                    continue
         
         # 발급 날짜 및 구청장 텍스트 분류
         if re.match(r'^[0-9\s.*]+$', text_cleaned) or "구청장" in text_cleaned or "시장" in text_cleaned:
