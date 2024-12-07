@@ -13,7 +13,7 @@ services:
       
     depends_on:
       - mmdetection
-      # - craft
+      - craft
       # - srnet
 
   mmdetection:
