@@ -83,23 +83,41 @@ def upload():
             obj["cropped_image_path"] = image_url  # URL 저장
             obj["polygon"] = new_polygon.tolist()
 
-        # # CRAFT 요청: type이 "sign"인 객체만
-        # sign_objects = [obj for obj in objects_data if obj.get("type") == "sign"]
-        # craft_server_url = 'http://craft:5002/predict'
-        # craft_response = requests.post(craft_server_url, json=sign_objects).json()
+        # CRAFT 요청: type이 "sign"인 객체만
+        sign_objects = [obj for obj in objects_data if obj.get("type") == "sign"]
+        craft_server_url = 'http://craft:5002/predict'
 
-        # craft_ids_with_text = {item["id"] for item in craft_response if item["contains_text"]}
-        # objects_data = [obj for obj in objects_data if obj["id"] not in craft_ids_with_text]
+        if sign_objects:  # sign_objects가 비어 있지 않을 때만 요청
+            try:
+                craft_response = requests.post(craft_server_url, json=sign_objects)
+                craft_response.raise_for_status()
 
-        # # CRAFT 응답 데이터 추가
-        # for obj in objects_data:
-        #     obj["text_regions"] = []
-        #     for craft_obj in craft_response:
-        #         if craft_obj["id"] == obj["id"]:
-        #             obj["text_regions"] = [
-        #                 {"region_id": idx + 1, "polygon": region}
-        #                 for idx, region in enumerate(craft_obj.get("text_regions", []))
-        #             ]
+                # 응답이 JSON인지 확인
+                if craft_response.headers.get('Content-Type') == 'application/json':
+                    craft_results = craft_response.json()
+
+                    # CRAFT 응답 데이터 처리
+                    for obj in objects_data:
+                        obj["text_regions"] = []
+                        for craft_obj in craft_results:
+                            if craft_obj["id"] == obj["id"]:
+                                # "contains_text" 키가 없는 경우 처리
+                                contains_text = craft_obj.get("contains_text", False)
+                                obj["contains_text"] = contains_text
+
+                                obj["text_regions"] = [
+                                    {"region_id": idx + 1, "polygon": region}
+                                    for idx, region in enumerate(craft_obj.get("text_regions", []))
+                                ]
+                else:
+                    app.logger.error("Invalid response format from CRAFT. Expected JSON.")
+                    return jsonify({"isSuccess": False, "message": "Invalid response format from CRAFT"}), 500
+            except requests.exceptions.RequestException as e:
+                app.logger.error(f"Error connecting to CRAFT server: {e}")
+                return jsonify({"isSuccess": False, "message": "CRAFT server error"}), 500
+            except ValueError as e:
+                app.logger.error(f"Error parsing CRAFT response: {e}")
+                return jsonify({"isSuccess": False, "message": "Error parsing CRAFT response"}), 500
 
         # ID 재부여
         for new_id, obj in enumerate(objects_data, start=1):

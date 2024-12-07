@@ -79,11 +79,16 @@ def predict():
             #     app.logger.info(f"Deleted image: {local_image_path}")
             # except Exception as e:
             #     app.logger.error(f"Error deleting image: {local_image_path} - {e}")
+            
             try:
                 polys = run_craft(local_image_path, RESULT_FOLDER)
+
+                # NumPy 배열을 Python 리스트로 변환
+                polys_as_list = [poly.tolist() for poly in polys]
+
                 results.append({
                     "id": obj_id,
-                    "text_regions": polys
+                    "text_regions": polys_as_list
                 })
             except Exception as e:
                 app.logger.error(f"Error running CRAFT for {obj_id}: {e}")

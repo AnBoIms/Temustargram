@@ -1,4 +1,3 @@
-# test.py
 import os
 import re
 import torch
@@ -9,6 +8,7 @@ from craft import CRAFT
 from refinenet import RefineNet
 from torch.autograd import Variable
 from collections import OrderedDict
+import cv2
 
 
 def copyStateDict(state_dict):
