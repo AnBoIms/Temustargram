@@ -3,7 +3,6 @@ import re
 import torch
 import imgproc
 import craft_utils
-import file_utils
 from craft import CRAFT
 from refinenet import RefineNet
 from torch.autograd import Variable
@@ -65,8 +64,7 @@ def test_net(net, image, text_threshold, link_threshold, low_text, poly, mag_rat
     return boxes, polys
 
 
-def run_craft(image_path, result_folder, model_path='./craft_mlt_25k.pth', text_threshold=0.7, low_text=0.4,
-              link_threshold=0.4, canvas_size=1280, mag_ratio=1.5, poly=False, refine=False, refiner_model=None):
+def run_craft(image_path, model_path='./craft_mlt_25k.pth', text_threshold=0.7, low_text=0.4,link_threshold=0.4, canvas_size=1280, mag_ratio=1.5, poly=False, refine=False, refiner_model=None):
     # load model
     net = CRAFT()
     net.load_state_dict(copyStateDict(torch.load(model_path, map_location='cpu')))
@@ -84,9 +82,5 @@ def run_craft(image_path, result_folder, model_path='./craft_mlt_25k.pth', text_
 
     # run test
     bboxes, polys = test_net(net, image, text_threshold, link_threshold, low_text, poly, mag_ratio, canvas_size, refine_net)
-
-    # save result
-    sanitized_filename = sanitize_filename(os.path.splitext(os.path.basename(image_path))[0])
-    file_utils.saveResult(image_path, image[:, :, ::-1], polys, dirname=result_folder)
 
     return polys

@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
-from image_processing import crop_and_transform_object, insert_image_final
+from image_processing import crop_and_transform_object, insert_image_final, crop_text_regions, merge_text_regions_with_cropped
 from idcard_processor import ocr_result, process_ocr_results, process_bounding_box
 import numpy as np
 import os
@@ -40,26 +40,25 @@ def upload_file():
     file.save(os.path.join(IMAGE_FOLDER, file.filename))
     return jsonify({"message": "File uploaded successfully"}), 200
 
-# 이미지 업로드
 @app.route('/upload', methods=['POST'])
 def upload():
     if 'file' not in request.files:
         return jsonify({"isSuccess": False, "message": "No file part"}), 404
-    
+
     file = request.files['file']
-    
     if file.filename == '':
         return jsonify({"isSuccess": False, "message": "No selected file"}), 404
-    
+
     filename = 'origin.png'
     file_path = os.path.join(IMAGE_FOLDER, filename)
     file.save(file_path)
-    
-    server_host = "http://backend:5000"  
+
+    server_host = "http://backend:5000"
     file_url = f"{server_host}/static/{filename}"
     mmdetection_server_url = 'http://mmdetection:5001/predict'
-    
+
     try:
+        # MMDetection 서버 요청
         response = requests.post(
             mmdetection_server_url,
             json={"image_path": file_url}
@@ -67,61 +66,44 @@ def upload():
         response.raise_for_status()
         objects_data = response.json()
 
-        # 객체 크롭
         original_image = cv2.imread(file_path)
         if original_image is None:
+            app.logger.error("Original image not found or unreadable")
             return jsonify({"isSuccess": False, "message": "Original image not found"}), 404
 
         results_dir = os.path.join(IMAGE_FOLDER, 'cropped')
         os.makedirs(results_dir, exist_ok=True)
 
+        # 객체 크롭
         for obj in objects_data:
             save_path, new_polygon = crop_and_transform_object(original_image, obj, results_dir)
             file_name = os.path.basename(save_path)
-            relative_path = save_path.replace('./static/', '')  # static 하위 경로 계산
-            image_url = f"{server_host}/static/{relative_path}"
-            obj["cropped_image_path"] = image_url  # URL 저장
+            relative_path = save_path.replace('./static/', '')
+            obj["cropped_image_path"] = f"{server_host}/static/{relative_path}"
             obj["polygon"] = new_polygon.tolist()
 
-        # CRAFT 요청: type이 "sign"인 객체만
+# CRAFT 요청 처리
         sign_objects = [obj for obj in objects_data if obj.get("type") == "sign"]
-        craft_server_url = 'http://craft:5002/predict'
+        if sign_objects:
+            craft_server_url = 'http://craft:5002/predict'
+            craft_response = requests.post(craft_server_url, json=sign_objects)
+            craft_response.raise_for_status()
 
-        if sign_objects:  # sign_objects가 비어 있지 않을 때만 요청
-            try:
-                craft_response = requests.post(craft_server_url, json=sign_objects)
-                craft_response.raise_for_status()
+            if craft_response.headers.get('Content-Type') == 'application/json':
+                craft_results = craft_response.json()
+                for obj in objects_data:
+                    obj["text_regions"] = []
+                    for craft_obj in craft_results:
+                        if craft_obj["id"] == obj["id"]:
+                            obj["contains_text"] = craft_obj.get("contains_text", False)
+                            obj["text_regions"] = [
+                                {"region_id": idx + 1, "polygon": region}
+                                for idx, region in enumerate(craft_obj.get("text_regions", []))
+                            ]
 
-                # 응답이 JSON인지 확인
-                if craft_response.headers.get('Content-Type') == 'application/json':
-                    craft_results = craft_response.json()
-
-                    # CRAFT 응답 데이터 처리
-                    for obj in objects_data:
-                        obj["text_regions"] = []
-                        for craft_obj in craft_results:
-                            if craft_obj["id"] == obj["id"]:
-                                # "contains_text" 키가 없는 경우 처리
-                                contains_text = craft_obj.get("contains_text", False)
-                                obj["contains_text"] = contains_text
-
-                                obj["text_regions"] = [
-                                    {"region_id": idx + 1, "polygon": region}
-                                    for idx, region in enumerate(craft_obj.get("text_regions", []))
-                                ]
-                else:
-                    app.logger.error("Invalid response format from CRAFT. Expected JSON.")
-                    return jsonify({"isSuccess": False, "message": "Invalid response format from CRAFT"}), 500
-            except requests.exceptions.RequestException as e:
-                app.logger.error(f"Error connecting to CRAFT server: {e}")
-                return jsonify({"isSuccess": False, "message": "CRAFT server error"}), 500
-            except ValueError as e:
-                app.logger.error(f"Error parsing CRAFT response: {e}")
-                return jsonify({"isSuccess": False, "message": "Error parsing CRAFT response"}), 500
-
-        # ID 재부여
-        for new_id, obj in enumerate(objects_data, start=1):
-            obj["id"] = new_id
+            else:
+                app.logger.error("Invalid response format from CRAFT.")
+                return jsonify({"isSuccess": False, "message": "Invalid response format from CRAFT"}), 500
 
         # JSON 결과 저장
         objects_json_path = os.path.join(IMAGE_FOLDER, 'objects.json')
@@ -139,8 +121,8 @@ def upload():
             "img": encoded_image
         }), 200
     except requests.exceptions.RequestException as e:
-        app.logger.error(f"Error connecting to MMDetection or CRAFT server: {e}")
-        return jsonify({"isSuccess": False, "message": "Detection or CRAFT server error"}), 500
+        app.logger.error(f"Error connecting to detection servers: {e}")
+        return jsonify({"isSuccess": False, "message": "Detection server error"}), 500
     except Exception as e:
         app.logger.error(f"Error in upload: {e}")
         return jsonify({"isSuccess": False, "message": "Internal Server Error"}), 500
@@ -162,13 +144,14 @@ def load_result():
         # 선택되지 않은 객체들의 크롭된 이미지 삭제
         for obj in unselected_objects:
             cropped_image_path = obj["cropped_image_path"].replace("http://backend:5000/static/", "./static/")
-            cropped_image_path = os.path.abspath(cropped_image_path)  
+            cropped_image_path = os.path.abspath(cropped_image_path)
             if os.path.exists(cropped_image_path):
                 os.remove(cropped_image_path)
                 app.logger.info(f"Deleted cropped image: {cropped_image_path}")
             else:
                 app.logger.warning(f"Cropped image not found: {cropped_image_path}")
 
+        # JSON 파일 갱신
         with open(objects_json_path, 'w', encoding='utf-8') as json_file:
             json.dump(selected_objects, json_file, ensure_ascii=False, indent=4)
             app.logger.info("Updated objects.json with selected objects")
@@ -200,10 +183,25 @@ def load_result():
                 # 결과 이미지 저장 (덮어쓰기)
                 cv2.imwrite(cropped_image_path, image)
                 app.logger.info(f"OCR processed and saved: {cropped_image_path}")
+        
+        server_host = "http://backend:5000"
+        # 텍스트 영역 크롭 및 경로 추가 (sign 객체에 대해서만 처리)
+        text_regions_dir = os.path.join(IMAGE_FOLDER, 'text_regions')
+        crop_text_regions(selected_objects, text_regions_dir, server_host)
+        app.logger.info("Text image regions cropped and paths updated!")
 
-        #SRNET 이미지 처리(간판에 한해서)
+        # SRNet 이미지 처리 (간판에 한해서)
         
 
+        # 텍스트 영역 합성
+        for obj in selected_objects:
+            if obj["type"] == "sign" and obj.get("text_regions"):
+                cropped_image_path = obj["cropped_image_path"].replace("http://backend:5000/static/", "./static/")
+                cropped_image_path = os.path.abspath(cropped_image_path)
+                if os.path.exists(cropped_image_path):
+                    success = merge_text_regions_with_cropped(cropped_image_path, obj["text_regions"])
+                    if not success:
+                        app.logger.error(f"Failed to merge text regions for {cropped_image_path}")
 
         # 최종 합성
         original_image_path = os.path.join(IMAGE_FOLDER, 'origin.png')
@@ -238,10 +236,10 @@ def load_result():
             "message": "Success",
             "result": encoded_image
         }), 200
-    #마지막에 static 폴더 다 지워버리기~
     except Exception as e:
         app.logger.error(f"Error in load_result: {e}")
         return jsonify({"isSuccess": False, "message": "Internal Server Error"}), 500
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
