@@ -5,10 +5,12 @@ services:
       context: ./backend
     ports:
       - "5000:5000"
-    # volumes:
-    #   - ./backend/static:/backend/static
+
+    volumes:
+      - ./backend/static:/backend/static
     environment:
-      - FLASK_DEBUG=1
+      - FLASK_DEBUG=1 
+      
     depends_on:
       - mmdetection
       # - craft
@@ -31,10 +33,13 @@ services:
   #     context: ./models/srnet
   #   ports:
   #     - "5003:5003"
-  frontend:
-    build:
-      context: ./frontend/upload_image
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
+  #   volumes:
+  #     - ./backend/static:/backend/static
+
+  # frontend:
+  #   build:
+  #     context: ./frontend/upload_image
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - backend
