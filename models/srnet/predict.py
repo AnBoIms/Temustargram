@@ -68,12 +68,12 @@ def main():
 
         try:
 
-          inp = example_iter.next()
+          inp = next(example_iter)
 
         except StopIteration:
 
           example_iter = iter(example_loader)
-          inp = example_iter.next()
+          inp = next(example_iter)
 
         i_t = inp[0].to(device)
         i_s = inp[1].to(device)
