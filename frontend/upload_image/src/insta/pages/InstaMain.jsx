@@ -1,10 +1,10 @@
 import { Component } from "react";
 import "../pages/Common.css";
-import "./Main.css";
-import MainNav from "../Components/MainNav";
+import "./InstaMain.css";
+import MainNav from "../Components/InstaNav";
 import MainFeed from "../Components/MainFeed";
 
-class Main extends Component {
+class InstaMain extends Component {
   render() {
     return (
       <>
@@ -15,4 +15,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default InstaMain;

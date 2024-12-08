@@ -1,12 +1,7 @@
-# React 개발 서버를 실행하는 Dockerfile
-FROM node:16
-
-WORKDIR /app
+FROM node:18
+WORKDIR /frontend
 COPY package.json package-lock.json ./
 RUN npm install
-COPY . .
-
+COPY . ./
 EXPOSE 3000
-
-# React 개발 서버 실행
-CMD ["npm", "start"]
+CMD ["npm", "run"]

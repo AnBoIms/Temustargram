@@ -1,8 +1,14 @@
 import { Component } from "react";
 import "../pages/Common.css";
-import "../pages/Main.css";
+import "../pages/InstaMain.css";
 
 import profileImg from "./Image/feed1-profile.jpg";
+import tenwook from "./Image/10wook.jpg";
+import dltnwjd22 from "./Image/dltnwjd22.jpg";
+import bomun from "./Image/bomunstella.jpg";
+import orhj from "./Image/orhj.jpg";
+
+
 
 
 class MainRight extends Component {
@@ -13,12 +19,12 @@ class MainRight extends Component {
           <div>
             <img
               className="user-info-img"
-              src={profileImg}
+              src={dltnwjd22}
             />
           </div>
           <div className="user-info-text">
-            <div className="user-info1">_sunghae__</div>
-            <div className="user-info2">성혜</div>
+            <div className="user-info1">dltnwjd22</div>
+            <div className="user-info2">수정</div>
           </div>
         </div>
         <div className="main-right-box">
@@ -29,27 +35,27 @@ class MainRight extends Component {
             </div>
             <div className="story-list">
               <div className="story-detail">
-                <img src={profileImg} />
+                <img src={dltnwjd22} />
                 <div className="story-info">
-                  <div className="story-id">minitmute_official</div>
+                  <div className="story-id">dltnwjd22</div>
                   <div className="story-time">1시간 전</div>
                 </div>
               </div>
               <div className="story-detail">
-                <img src={profileImg} />
+                <img src={tenwook} />
                 <div className="story-info">
-                  <div className="story-id">so__yoni</div>
+                  <div className="story-id">10wook._.0912</div>
                   <div className="story-time">2시간 전</div>
                 </div>
               </div>
               <div className="story-detail">
-                <img src={profileImg} />
+                <img src={orhj} />
                 <div className="story-info">
-                  <div className="story-id">it.smemario</div>
+                  <div className="story-id">orhj_0612</div>
                   <div className="story-time">2시간 전</div>
                 </div>
               </div>
-              <div className="story-detail">
+              {/* <div className="story-detail">
                 <img src={profileImg} />
                 <div className="story-info">
                   <div className="story-id">__onakahet__</div>
@@ -62,7 +68,7 @@ class MainRight extends Component {
                   <div className="story-id">changmo_</div>
                   <div className="story-time">4시간 전</div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="recommend-box">
@@ -72,9 +78,9 @@ class MainRight extends Component {
             </div>
             <div className="recommend-list">
               <div className="story-detail">
-                <img src={profileImg} />
+                <img src={bomun} />
                 <div className="story-info">
-                  <div className="story-id">2toyoung</div>
+                  <div className="story-id">bonumstella</div>
                   <div className="story-friend">회원님을 팔로우합니다</div>
                 </div>
                 <div className="follow">팔로우</div>
@@ -82,7 +88,7 @@ class MainRight extends Component {
               <div className="story-detail">
                 <img src={profileImg} />
                 <div className="story-info">
-                  <div className="story-id">ron_sae</div>
+                  <div className="story-id">ardor_uzo</div>
                   <div className="story-friend">회원님을 팔로우합니다</div>
                 </div>
                 <div className="follow">팔로우</div>
@@ -90,7 +96,7 @@ class MainRight extends Component {
               <div className="story-detail">
                 <img src={profileImg} />
                 <div className="story-info">
-                  <div className="story-id">sangtorii</div>
+                  <div className="story-id">ddu_no</div>
                   <div className="story-friend">회원님을 팔로우합니다</div>
                 </div>
                 <div className="follow">팔로우</div>

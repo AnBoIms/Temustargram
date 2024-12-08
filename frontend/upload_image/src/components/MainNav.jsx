@@ -4,31 +4,40 @@ import "./MainNav.css";
 import logoText from "../assets/AnboimsLogo.png";
 import InstaLogo from "../assets/instagramLogo.png";
 import chatgptLogo from "../assets/chatgptLogo.png";
+import { useNavigate } from "react-router-dom";
 
 
 // import upload from "../Components/Image/24uploadIcon.png";
 
-class MainNav extends Component {
-  render() {
-    return (
-      <nav>
+const MainNav = () => {
+  const navigate = useNavigate(); // navigate 훅 사용
+
+  const handleGoToInsta = () => {
+    navigate("/insta");
+  };
+
+  return (
+      <div>
         <div className="topBox">
-            <div className="link-left">
+            <div className="link-logo">
                 <a href="">
                     <img src={logoText} />
                 </a>
-                <div className="slash"></div>
+                <div className="line"></div>
                 <div className="info">
                   당신의 사진을 안전하게~<br></br>
                   안전보호 이미지 안보임스
                 </div>
             </div>
             <div className = "link-right"> 
+              <button onClick={handleGoToInsta}>
                 <a href="">
                     <img 
                       className="upload_icon"
                       src={InstaLogo} />
                 </a>
+              </button>
+                
                 <a href="">
                     <img                 
                     className="upload_icon"
@@ -39,9 +48,9 @@ class MainNav extends Component {
         </div>
         <div className="underline"></div>
 
-      </nav>
-    );
-  }
-}
+      </div>
+  );
+  
+};
 
 export default MainNav;

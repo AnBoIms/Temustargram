@@ -1,10 +1,12 @@
 import { Component } from "react";
 import "../pages/Common.css";
-import "../pages/Main.css";
+import "../pages/InstaMain.css";
 import MainRight from "./MainRight";
 import CmtBox from "./CmtBox";
 
 import profileImg from "./Image/feed1-profile.jpg";
+import dltnwjd22 from "./Image/dltnwjd22.jpg";
+
 import threeDot from "./Image/three-dot.png";
 import feedMain from "./Image/feed1-main.jpg";
 import heart from "./Image/heart.png";
@@ -52,8 +54,8 @@ class MainFeed extends Component {
           <div className="feed1">
             <div className="feeds-top">
               <header className="feed-info">
-                <img className="feed-image" src={profileImg} />
-                <a className="feed-id">5rozy_</a>
+                <img className="feed-image" src={dltnwjd22} />
+                <a className="feed-id">dltnwjd22</a>
                 <div className="feed-menu">
                   <img src={threeDot} />
                 </div>
@@ -83,20 +85,26 @@ class MainFeed extends Component {
                 <section className="like">좋아요 1,063개</section>
                 <div className="comment-box">
                   <div>
-                    <span className="comment-id">5rozy_</span>
+                    <span className="comment-id">dltnwjd22</span>
                     <span>언니잠싀만!!!!!! 냄새맛집이라고</span>
                   </div>
                   <div className="comment-view">댓글 2개 모두 보기</div>
                   <div className="addComment">
                     <div className="comment-list">
-                      <span className="comment-id">br0thersilver</span>
-                      <span className="comment-text">멍!!멍멍!!</span>
+                      <span className="comment-id">orhj_0612</span>
+                      <span className="comment-text">아 저기 어디더라;; 다 가려놨냐</span>
                       <img src={heart} />
                     </div>
                     <div className="comment-list">
-                      <span className="comment-id">jiy00000n</span>
+                      <span className="comment-id">10wook._.0912</span>
                       <span className="comment-text">
-                        아 로지 사랑스로왕,,🧡🧡
+                        신분증 올린줄 알고 놀랐는데 다 가려져있네                      </span>
+                      <img src={heart} />
+                    </div>
+                    <div className="comment-list">
+                      <span className="comment-id">bonumstella</span>
+                      <span className="comment-text">
+                      세상 좋아졌다 개인정보 다 가려주네;;
                       </span>
                       <img src={heart} />
                     </div>

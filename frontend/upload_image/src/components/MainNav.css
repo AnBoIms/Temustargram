@@ -9,11 +9,11 @@
     justify-content: space-between;
   }
   
-  .link-left img {
+  .link-logo img {
     width: 150px;
   }
   
-  .link-left {
+  .link-logo {
     display: flex;
     cursor: pointer;
   }
@@ -26,7 +26,7 @@
 
   }
   
-  .slash {
+  .line {
     width: 1px;
     height: 45px;
     background-color: #262626;
@@ -38,8 +38,14 @@
     height: 1px;
     background-color: #262626;
     margin: 0px 0px;
+    margin-bottom: 70px;
   }
 
   .info{
     margin : 0px;
+  }
+  
+  button {
+    all: unset; /* 기본 스타일 제거 */
+    display: inline-block; /* 이미지 크기에 맞춰 버튼 크기를 조정 */
   }
