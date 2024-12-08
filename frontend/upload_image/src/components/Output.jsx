@@ -21,19 +21,19 @@ const Output = () => {
     const [error, setError] = useState(null); // 에러 상태
   
     useEffect(() => {
-      // location.state로 전달된 데이터 확인
-      if (location.state && location.state.result) {
-        const base64Image = location.state.result;
-
-        if (!base64Image.startsWith("data:image/")) {
-          setImageSrc(`data:image/png;base64,${base64Image}`);
-        } else {
-          setImageSrc(base64Image);
-        }      } else {
-        setError("이미지가 전달되지 않았습니다.");
-      }
-    }, [location.state]);
-
+        // location.state로 전달된 데이터 확인
+        if (location.state && location.state.result) {
+          const base64Image = location.state.result;
+  
+          if (!base64Image.startsWith("data:image/")) {
+            setImageSrc(`data:image/png;base64,${base64Image}`);
+          } else {
+            setImageSrc(base64Image);
+          }      } else {
+          setError("이미지가 전달되지 않았습니다.");
+        }
+      }, [location.state]);
+  
 
     const handleDownload = () => {
         // Get the image URL and create a link
@@ -51,9 +51,6 @@ const Output = () => {
 
     const handleGoToInsta = () => {
         navigate("/insta");
-    };
-    const handleGoToGpt = () => {
-        navigate("/gpt");
     };
 
     return (
@@ -89,7 +86,7 @@ const Output = () => {
                             src={InstaLogo} />
                         </a>
                     </button>
-                    <button className="share_button" onClick={handleGoToGpt}>
+                    <button className="share_button">
                     
                         <a href="">
                             <img                 

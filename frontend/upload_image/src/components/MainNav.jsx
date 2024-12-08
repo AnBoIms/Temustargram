@@ -15,10 +15,6 @@ const MainNav = () => {
   const handleGoToInsta = () => {
     navigate("/insta");
   };
-  const handleGoToGpt = () => {
-    navigate("/gpt");
-  };
-
 
   return (
       <div>
@@ -41,14 +37,12 @@ const MainNav = () => {
                       src={InstaLogo} />
                 </a>
               </button>
-              <button className="share_button" onClick={handleGoToGpt}>    
+                
                 <a href="">
                     <img                 
                     className="upload_icon"
                      src={chatgptLogo} />
                 </a>
-              </button>
-                
             </div>
 
         </div>
