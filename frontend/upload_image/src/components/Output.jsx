@@ -16,18 +16,18 @@ const Output = () => {
     const navigate = useNavigate(); // navigate 훅 사용
 
 
-    // const location = useLocation();
-    // const [imageSrc, setImageSrc] = useState(null); // 이미지를 저장할 상태
-    // const [error, setError] = useState(null); // 에러 상태
+    const location = useLocation();
+    const [imageSrc, setImageSrc] = useState(null); // 이미지를 저장할 상태
+    const [error, setError] = useState(null); // 에러 상태
   
-    // useEffect(() => {
-    //   // location.state로 전달된 데이터 확인
-    //   if (location.state && location.state.result) {
-    //     setImageSrc(location.state.result); // Base64 이미지 설정
-    //   } else {
-    //     setError("이미지가 전달되지 않았습니다.");
-    //   }
-    // }, [location.state]);
+    useEffect(() => {
+      // location.state로 전달된 데이터 확인
+      if (location.state && location.state.result) {
+        setImageSrc(location.state.result); // Base64 이미지 설정
+      } else {
+        setError("이미지가 전달되지 않았습니다.");
+      }
+    }, [location.state]);
 
     const handleDownload = () => {
         // Get the image URL and create a link
@@ -53,8 +53,8 @@ const Output = () => {
                 </div>
                 <div className = "preview">
                     {/* // 다음 img태그 주석하고 밑의 주석 풀기 */}
-                    <img className="img" ref={imgRef} src={tempImg} alt="Preview" />
-                    {/* {imageSrc ? (
+                    {/* <img className="img" ref={imgRef} src={tempImg} alt="Preview" /> */}
+                    {imageSrc ? (
                         <div>
                         <img
                             src={imageSrc}
@@ -62,7 +62,7 @@ const Output = () => {
                         </div>
                     ) : (
                         <div className="loader"></div>
-                    )} */}
+                    )}
                 </div>
         
                 
