@@ -34,8 +34,14 @@ const Output = () => {
       }
     }, [location.state]);
 
+
     const handleDownload = () => {
         // Get the image URL and create a link
+        if (!imgRef.current) {
+            console.error("Image not loaded or imgRef is null!");
+            return;
+        }
+
         const imgURL = imgRef.current.src;
         const link = document.createElement("a");
         link.href = imgURL;
@@ -65,6 +71,7 @@ const Output = () => {
                     {imageSrc ? (
                         <div>
                         <img
+                            ref={imgRef}
                             src={imageSrc}
                         />
                         </div>
