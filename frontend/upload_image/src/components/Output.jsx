@@ -1,8 +1,8 @@
-// import { useEffect, useState } from "react";
-// import { useLocation, useNavigate } from "react-router-dom"; // useNavigate 추가
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom"; // useNavigate 추가
 import "./Main.css";
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import MainNav from "./MainNav";
 
 
@@ -21,16 +21,27 @@ const Output = () => {
     const [error, setError] = useState(null); // 에러 상태
   
     useEffect(() => {
-      // location.state로 전달된 데이터 확인
-      if (location.state && location.state.result) {
-        setImageSrc(location.state.result); // Base64 이미지 설정
-      } else {
-        setError("이미지가 전달되지 않았습니다.");
-      }
-    }, [location.state]);
+        // location.state로 전달된 데이터 확인
+        if (location.state && location.state.result) {
+          const base64Image = location.state.result;
+  
+          if (!base64Image.startsWith("data:image/")) {
+            setImageSrc(`data:image/png;base64,${base64Image}`);
+          } else {
+            setImageSrc(base64Image);
+          }      } else {
+          setError("이미지가 전달되지 않았습니다.");
+        }
+      }, [location.state]);
+  
 
     const handleDownload = () => {
         // Get the image URL and create a link
+        if (!imgRef.current) {
+            console.error("Image not loaded or imgRef is null!");
+            return;
+        }
+
         const imgURL = imgRef.current.src;
         const link = document.createElement("a");
         link.href = imgURL;
@@ -57,6 +68,7 @@ const Output = () => {
                     {imageSrc ? (
                         <div>
                         <img
+                            ref={imgRef}
                             src={imageSrc}
                         />
                         </div>

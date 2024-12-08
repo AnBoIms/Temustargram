@@ -5,5 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000, // 포트를 3000번으로 변경
+    host: '0.0.0.0',
+    strictPort: true,
   },
 });
