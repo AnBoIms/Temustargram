@@ -1,18 +1,17 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // useNavigate 추가
+import { useLocation, useNavigate } from "react-router-dom";
 import "./Main.css";
-import tempImg from "../assets/tempIMG.jpg";
 import MainNav from "./MainNav";
-
 
 const Select = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // navigate 훅 사용
+  const navigate = useNavigate();
   const canvasRef = useRef(null);
   const [imageSrc, setImageSrc] = useState(""); // 이미지 URL
   const [objects, setObjects] = useState([]); // 객체 데이터
   const [error, setError] = useState(""); // 에러 메시지
-  const [highlightedObjectId, setHighlightedObjectId] = useState(null); // 강조된 객체 ID 저장
+  const [selectedObjectIds, setSelectedObjectIds] = useState([]); // 선택된 객체 ID 배열
+  const [serverMessage, setServerMessage] = useState(""); // 서버 응답 메시지
 
   useEffect(() => {
     if (location.state && location.state.image && location.state.coor) {
@@ -32,7 +31,7 @@ const Select = () => {
   }, [location.state]);
 
   useEffect(() => {
-    if (!imageSrc || !canvasRef.current) return; // `null` 상태에서 작업 방지
+    if (!imageSrc || !canvasRef.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -41,33 +40,29 @@ const Select = () => {
       const img = new Image();
 
       img.onload = () => {
-        // 캔버스 크기를 이미지 크기에 맞춤
         canvas.width = img.width;
         canvas.height = img.height;
 
-        // 이미지 그리기
         ctx.drawImage(img, 0, 0);
 
-        // 다각형 그리기
         objects.forEach((obj) => {
           const { polygon, id } = obj;
 
           ctx.beginPath();
           polygon.forEach(([x, y], index) => {
             if (index === 0) {
-              ctx.moveTo(x, y); // 시작점 설정
+              ctx.moveTo(x, y);
             } else {
-              ctx.lineTo(x, y); // 라인 그리기
+              ctx.lineTo(x, y);
             }
           });
           ctx.closePath();
 
-          // 선택된 객체는 반투명한 색으로 채우기
-          if (id === highlightedObjectId) {
-            ctx.fillStyle = "rgba(255, 0, 0, 0.3)"; // 빨간색, 50% 투명도
-            ctx.fill(); // 다각형 색 채우기
+          if (selectedObjectIds.includes(id)) {
+            ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+            ctx.fill();
           } else {
-            ctx.strokeStyle = "red"; // 기본 테두리 색상
+            ctx.strokeStyle = "red";
             ctx.lineWidth = 7;
             ctx.stroke();
           }
@@ -80,14 +75,12 @@ const Select = () => {
     const handleCanvasClick = (event) => {
       if (objects.length === 0) return;
 
-      // 클릭 좌표 계산
       const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width; // X축 스케일 비율
-      const scaleY = canvas.height / rect.height; // Y축 스케일 비율
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
       const x = (event.clientX - rect.left) * scaleX;
       const y = (event.clientY - rect.top) * scaleY;
 
-      // 클릭한 다각형 확인
       for (const obj of objects) {
         const { id, polygon } = obj;
 
@@ -101,29 +94,50 @@ const Select = () => {
         });
         ctx.closePath();
 
-        // 클릭 위치가 다각형 내부인지 확인
         if (ctx.isPointInPath(x, y)) {
-          setHighlightedObjectId(id); // 클릭된 객체의 ID를 상태에 저장
-          return; // 첫 번째 매칭 다각형만 처리
+          setSelectedObjectIds((prev) =>
+            prev.includes(id) ? prev.filter((objId) => objId !== id) : [...prev, id]
+          ); // 선택 해제 또는 추가
+          return;
         }
       }
     };
 
-    // 클릭 이벤트 리스너 추가
     canvas.addEventListener("click", handleCanvasClick);
 
-    // 클린업 함수로 이벤트 리스너 제거
     return () => {
       canvas.removeEventListener("click", handleCanvasClick);
     };
-  }, [imageSrc, objects, highlightedObjectId]);
+  }, [imageSrc, objects, selectedObjectIds]);
 
   const handleGoBack = () => {
-    navigate("/"); // "/" 경로로 이동
+    navigate("/");
   };
 
-  const handleGoOutput = () => {
-    navigate("/Output"); // "/" 경로로 이동
+  const handleSendToServer = async () => {
+    if (selectedObjectIds.length === 0) {
+      setError("선택된 객체가 없습니다. 먼저 객체를 선택해주세요.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/load_result", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ selected_ids: selectedObjectIds }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setServerMessage(data.message); // 서버의 성공 메시지 표시
+        navigate("/Output", { state: { result: data.result } }); // Output 페이지로 결과 전달
+      } else {
+        setError(`서버 오류: ${data.message}`);
+      }
+    } catch (error) {
+      setError("서버 요청에 실패했습니다. 네트워크 상태를 확인해주세요.");
+    }
   };
 
   return (
@@ -131,8 +145,10 @@ const Select = () => {
       <MainNav />
 
       {error && <div style={{ color: "red", marginTop: "10px" }}>{error}</div>}
+      {serverMessage && <div style={{ color: "green", marginTop: "10px" }}>{serverMessage}</div>}
+
       <div className="container_row">
-        <div className = "box">
+        <div className="box">
           <div className="alert_col">
             <h2>사진에 표시된 객체들 중<br />가리고 싶은<br />대상을 선택해주세요.</h2>
           </div>
@@ -140,7 +156,7 @@ const Select = () => {
             <button className="upload_button" onClick={handleGoBack}>
               이전 페이지로
             </button>
-            <button className="upload_button" onClick={handleGoOutput}>
+            <button className="upload_button" onClick={handleSendToServer}>
               선택 완료
             </button>
           </div>
@@ -148,12 +164,10 @@ const Select = () => {
         <div>
           {imageSrc ? (
             <canvas ref={canvasRef} className="select_preview" />
-            // <img src = {tempImg} className="select_preview"/>
           ) : (
             <div className="loader"></div>
           )}
         </div>
-        
       </div>
     </div>
   );
