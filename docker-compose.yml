@@ -19,12 +19,16 @@ services:
       context: ./models/mmdetection
     ports:
       - "5001:5001"
+    volumes:
+      - ./backend/static:/mmdetection/static
 
   craft:
     build:
       context: ./models/craft
     ports:
       - "5002:5002"
+    volumes:
+      - ./backend/static:/craft/static
 
   srnet:
     build:

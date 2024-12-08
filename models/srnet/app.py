@@ -19,14 +19,14 @@ logging.basicConfig(level=logging.INFO)
 @app.route('/predict', methods=['POST'])
 def process_images():
     try:
-        # Step 1: Process images (gray background with text)
+        # Process images (gray background with text)
         file_mapping = process_all_images(input_folder, label_output_folder, "안보임스", font_path)
 
-        # Step 2: Run SRNet for prediction
+        # Run SRNet for prediction
         run_srnet(
             input_dir=label_output_folder,
             save_dir=results_folder,
-            checkpoint_path="trained_final_5M_.model", 
+            checkpoint_path="train_step-500000.model", 
             learning_rate=0.0002,
             beta1=0.5,
             beta2=0.999,

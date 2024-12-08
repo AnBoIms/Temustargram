@@ -63,7 +63,6 @@ def test_net(net, image, text_threshold, link_threshold, low_text, poly, mag_rat
 
     return boxes, polys
 
-
 def run_craft(image_path, model_path='./craft_mlt_25k.pth', text_threshold=0.7, low_text=0.4,link_threshold=0.4, canvas_size=1280, mag_ratio=1.5, poly=False, refine=False, refiner_model=None):
     # load model
     net = CRAFT()

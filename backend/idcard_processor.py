@@ -138,7 +138,17 @@ def process_bounding_box(image, texture_path, bounding_box):
 
     return inpainted_image
 
-def apply_blur(image_path, output_path, blur_intensity=45):
-    blurred_image = cv2.GaussianBlur(image_path, (blur_intensity, blur_intensity), 0)
+def apply_blur(image_path, output_path, blur_intensity=55):
 
+    image = cv2.imread(image_path)
+    if image is None:
+        print(f"Error: Cannot load image at {image_path}")
+        return False
+
+    # Gaussian Blur 적용
+    blurred_image = cv2.GaussianBlur(image, (blur_intensity, blur_intensity), 0)
+
+    # 결과 저장
     cv2.imwrite(output_path, blurred_image)
+    print(f"Blurred image saved at {output_path}")
+    return True

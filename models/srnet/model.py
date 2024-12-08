@@ -50,7 +50,7 @@ class Res_block(torch.nn.Module):
         self._conv3 = torch.nn.Conv2d(in_channels//4, in_channels, kernel_size = 1, stride=1)
         
         self._bn = torch.nn.BatchNorm2d(in_channels)
-       
+
     def forward(self, x):
         
         xin = x

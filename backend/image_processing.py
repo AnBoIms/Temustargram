@@ -59,12 +59,12 @@ def insert_image_final(base_img, insert_img, polygon):
     warped_img = cv2.warpPerspective(insert_img, M, (base_img.shape[1], base_img.shape[0]))
 
     mask = cv2.warpPerspective(
-        np.ones((insert_height, insert_width), dtype=np.uint8) * 255,  # 단일 채널
+        np.ones((insert_height, insert_width), dtype=np.uint8) * 255,
         M,
         (base_img.shape[1], base_img.shape[0])
     )
 
-    if len(base_img.shape) == 3 and base_img.shape[2] == 3:  # base_img가 BGR 이미지일 경우
+    if len(base_img.shape) == 3 and base_img.shape[2] == 3:
         mask = cv2.merge([mask, mask, mask])
     mask_inv = cv2.bitwise_not(mask)
     if warped_img.dtype != base_img.dtype:
@@ -75,12 +75,11 @@ def insert_image_final(base_img, insert_img, polygon):
 
     return final_result
 
-def crop_text_regions(selected_objects, results_dir, server_host):
-    # 디렉토리 생성
+def crop_text_regions(selected_objects, results_dir):
     os.makedirs(results_dir, exist_ok=True)
 
     for obj in selected_objects:
-        cropped_image_path = obj["cropped_image_path"].replace(f"{server_host}/static/", "./static/")
+        cropped_image_path = obj["cropped_image_path"].replace(f"/static/", "./static/")
         if not os.path.exists(cropped_image_path):
             print(f"Error: File not found at {cropped_image_path}")
             continue
@@ -116,15 +115,14 @@ def crop_text_regions(selected_objects, results_dir, server_host):
 
             if os.path.exists(save_path):
                 print(f"Cropped image saved at {save_path}")
-                region["text_image_path"] = f"{server_host}/static/text_regions/{obj['id']}_region_{region_id}.png"
+                region["text_image_path"] = f"/static/text_regions/{obj['id']}_region_{region_id}.png"
                 print(f"Updated region: {region}")
             else:
                 print(f"Failed to save cropped image at {save_path}")
     return selected_objects
 
 def merge_text_regions(obj):
-    # URL 경로를 로컬 파일 경로로 변환
-    cropped_image_path = obj['cropped_image_path'].replace("http://backend:5000/static/", "./static/")
+    cropped_image_path = obj['cropped_image_path'].replace("/static/", "./static/")
     cropped_img = cv2.imread(cropped_image_path)
 
     if cropped_img is None:
@@ -132,15 +130,13 @@ def merge_text_regions(obj):
         return False
 
     for region in obj['text_regions']:
-        # 텍스트 이미지 경로 변환 및 로드
-        text_image_path = region['text_image_path'].replace("http://backend:5000/static/", "./static/")
+        text_image_path = region['text_image_path'].replace("/static/", "./static/")
         text_img = cv2.imread(text_image_path)
 
         if text_img is None:
             print(f"Error: Cannot load text image at {text_image_path}")
             continue
 
-        # 텍스트 이미지 크기와 폴리곤 가져오기
         region_h, region_w = text_img.shape[:2]
         polygon = np.array(region['polygon'], dtype=np.float32)
 
@@ -148,7 +144,6 @@ def merge_text_regions(obj):
             print(f"Error: Empty polygon for region {region['region_id']}")
             continue
 
-        # 투영 변환 매트릭스 계산
         try:
             text_coords = np.array([[0, 0], [region_w, 0], [region_w, region_h], [0, region_h]], dtype=np.float32)
             M = cv2.getPerspectiveTransform(text_coords, polygon)
@@ -156,25 +151,17 @@ def merge_text_regions(obj):
             print(f"Error: Failed to compute perspective transform for region {region['region_id']}: {e}")
             continue
 
-        # 텍스트 이미지를 폴리곤 영역에 맞게 변형
         warped_text_img = cv2.warpPerspective(text_img, M, (cropped_img.shape[1], cropped_img.shape[0]))
 
-        # 마스크 생성 및 폴리곤 내부 처리
         mask = np.zeros((cropped_img.shape[0], cropped_img.shape[1]), dtype=np.uint8)
         cv2.fillPoly(mask, [polygon.astype(np.int32)], 255)
 
-        # 투영된 텍스트 이미지의 마스크 생성 (텍스트 외 영역 제거)
         mask_inv = cv2.bitwise_not(mask)
         cropped_background = cv2.bitwise_and(cropped_img, cropped_img, mask=mask_inv)
 
-        # 최종 합성
         warped_text_img = cv2.bitwise_and(warped_text_img, warped_text_img, mask=mask)
-        result = cv2.add(cropped_background, warped_text_img)
+        cropped_img = cv2.add(cropped_background, warped_text_img)
 
-        # 업데이트된 이미지를 저장
-        cropped_img = result
-
-    # 최종 이미지를 저장
     cv2.imwrite(cropped_image_path, cropped_img)
     print(f"Updated cropped image saved at {cropped_image_path}")
     return True
