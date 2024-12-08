@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
-from image_processing import crop_and_transform_object, insert_image_final, crop_text_regions, merge_text_regions_with_cropped
-from idcard_processor import ocr_result, process_ocr_results, process_bounding_box
+from image_processing import crop_and_transform_object, insert_image_final, crop_text_regions, merge_text_regions
+from idcard_processor import ocr_result, process_ocr_results, process_bounding_box, apply_blur
 import numpy as np
 import os
 import logging
@@ -30,15 +30,6 @@ def get_file(filename):
     if os.path.exists(file_path):
         return send_file(file_path)
     return jsonify({"message": "File not found"}), 404
-
-# 파일 업로드 API
-@app.route('/upload_static', methods=['POST'])
-def upload_file():
-    if 'file' not in request.files:
-        return jsonify({"message": "No file provided"}), 400
-    file = request.files['file']
-    file.save(os.path.join(IMAGE_FOLDER, file.filename))
-    return jsonify({"message": "File uploaded successfully"}), 200
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -82,7 +73,7 @@ def upload():
             obj["cropped_image_path"] = f"{server_host}/static/{relative_path}"
             obj["polygon"] = new_polygon.tolist()
 
-# CRAFT 요청 처리
+        # CRAFT 요청 처리
         sign_objects = [obj for obj in objects_data if obj.get("type") == "sign"]
         if sign_objects:
             craft_server_url = 'http://craft:5002/predict'
@@ -171,37 +162,65 @@ def load_result():
                 ocr_results = ocr_result(cropped_image_path)
                 processed_results = process_ocr_results(ocr_results)
                 image = cv2.imread(cropped_image_path)
+                
 
                 # 이미지 합성
-                for category, bounding_box_data in processed_results.items():
-                    if bounding_box_data and isinstance(bounding_box_data, list):
-                        for bounding_box, _ in bounding_box_data:
-                            texture_path = textures.get(category)
-                            if texture_path:
-                                image = process_bounding_box(image, texture_path, bounding_box)
+                if not processed_results["name"] or not processed_results["resident_id"] or not processed_results["address"]:
+                    apply_blur(image, obj['cropped_image_path'])
+                    print(f"블러 처리된 이미지가 저장되었습니다: {obj['cropped_image_path']}")
+                else:
+                    for category, bounding_box_data in processed_results.items():
+                        if bounding_box_data and isinstance(bounding_box_data, list):
+                            for bounding_box, _ in bounding_box_data:
+                                texture_path = textures.get(category)
+                                if texture_path:
+                                    image = process_bounding_box(image, texture_path, bounding_box)
 
                 # 결과 이미지 저장 (덮어쓰기)
                 cv2.imwrite(cropped_image_path, image)
                 app.logger.info(f"OCR processed and saved: {cropped_image_path}")
         
         server_host = "http://backend:5000"
+
         # 텍스트 영역 크롭 및 경로 추가 (sign 객체에 대해서만 처리)
         text_regions_dir = os.path.join(IMAGE_FOLDER, 'text_regions')
-        crop_text_regions(selected_objects, text_regions_dir, server_host)
-        app.logger.info("Text image regions cropped and paths updated!")
+        selected_objects = crop_text_regions(selected_objects, text_regions_dir, server_host)  # 함수 호출 후 데이터 반환
+        app.logger.info("Text image regions cropped!")
+
+        # 디버깅: selected_objects 확인
+        app.logger.info(f"Updated selected_objects: {selected_objects}")
+
+        # JSON 파일 갱신
+        objects_json_path = os.path.join(IMAGE_FOLDER, 'objects.json')
+        with open(objects_json_path, 'w', encoding='utf-8') as json_file:
+            json.dump(selected_objects, json_file, ensure_ascii=False, indent=4)
+            app.logger.info("Updated objects.json with cropped text regions.")
 
         # SRNet 이미지 처리 (간판에 한해서)
-        
+        srnet_server_url = "http://srnet:5003/predict"  # SRNet 서버 URL
+
+        try:
+            # SRNet 서버 요청
+            srnet_response = requests.post(srnet_server_url)
+            srnet_response.raise_for_status()
+            if srnet_response.status_code == 200:
+                app.logger.info("SRNet processing completed successfully.")
+            else:
+                app.logger.error(f"SRNet returned an error: {srnet_response.status_code}")
+                return jsonify({"isSuccess": False, "message": "SRNet processing failed"}), 500
+
+        except requests.exceptions.RequestException as e:
+            app.logger.error(f"Error connecting to SRNet server: {e}")
+            return jsonify({"isSuccess": False, "message": "SRNet server error"}), 500
 
         # 텍스트 영역 합성
         for obj in selected_objects:
-            if obj["type"] == "sign" and obj.get("text_regions"):
-                cropped_image_path = obj["cropped_image_path"].replace("http://backend:5000/static/", "./static/")
-                cropped_image_path = os.path.abspath(cropped_image_path)
-                if os.path.exists(cropped_image_path):
-                    success = merge_text_regions_with_cropped(cropped_image_path, obj["text_regions"])
-                    if not success:
-                        app.logger.error(f"Failed to merge text regions for {cropped_image_path}")
+            if obj["type"] == "sign":
+                success = merge_text_regions(obj)
+                if success:
+                    app.logger.info(f"Merged text regions for {obj['cropped_image_path']}")
+                else:
+                    app.logger.error(f"Failed to merge text regions for {obj['cropped_image_path']}")
 
         # 최종 합성
         original_image_path = os.path.join(IMAGE_FOLDER, 'origin.png')
@@ -239,7 +258,6 @@ def load_result():
     except Exception as e:
         app.logger.error(f"Error in load_result: {e}")
         return jsonify({"isSuccess": False, "message": "Internal Server Error"}), 500
-
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
