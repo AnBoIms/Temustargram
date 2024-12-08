@@ -3,6 +3,7 @@ import ImageUpload from "./components/ImageUpload";
 import Select from "./components/Select";
 import Output from "./components/Output";
 import InstaMain from "./insta/pages/InstaMain"; // insta 관련 컴포넌트 임포트
+import GptMain from "./gpt/src/GptMain"; // insta 관련 컴포넌트 임포트
 
 const AppRoutes = () => {
   return (
@@ -11,6 +12,7 @@ const AppRoutes = () => {
       <Route path="/select" element={<Select />} />
       <Route path="/output" element={<Output />} />
       <Route path="/insta" element={<InstaMain />} /> {/* insta 메인 경로 추가 */}
+      <Route path="/gpt" element={<GptMain />} /> {/* gpt 메인 경로 추가 */}
     </Routes>
   );
 };
