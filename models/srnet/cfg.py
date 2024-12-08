@@ -1,5 +1,5 @@
 gpu = 0
-cpu = 'cpu'##cpu 설정 추가
+cpu = 'cpu'
 
 
 lt = 1.
@@ -30,7 +30,7 @@ ckpt_path = '/content/trained_final_5M_.model'
 # data
 batch_size = 8
 data_shape = [64, None]
-data_dir = './content/srnet_data'##여기 점 붙이는 수정 사항이 있었음
+data_dir = './content/srnet_data'
 i_t_dir = 'i_t'
 i_s_dir = 'i_s'
 t_sk_dir = 't_sk'

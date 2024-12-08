@@ -21,42 +21,22 @@ class datagen_srnet(Dataset):
             self.batch_size = cfg.batch_size
             self.data_shape = cfg.data_shape
             self.name_list = os.listdir(os.path.join(self.data_dir, self.t_b_dir))
-      
+
     def __len__(self):
         return len(self.name_list)
     
     def __getitem__(self, idx):
         
         img_name = self.name_list[idx]
-        # print(self.name_list)
         number = re.match(r'^\d+', img_name).group()
-        # print(number)
-        
-        # i_t = io.imread(os.path.join(cfg.data_dir, cfg.i_t_dir, img_name)) #원본
-        # # i_t = io.imread(os.path.join(cfg.data_dir, cfg.t_b_dir, img_name))
-        # i_s = io.imread(os.path.join(cfg.data_dir, cfg.i_s_dir, img_name))
-        # t_sk = io.imread(os.path.join(cfg.data_dir, cfg.t_sk_dir, img_name), as_gray = True)
-        # t_t = io.imread(os.path.join(cfg.data_dir, cfg.t_t_dir, img_name))
-        # t_b = io.imread(os.path.join(cfg.data_dir, cfg.t_b_dir, img_name))
-        # t_f = io.imread(os.path.join(cfg.data_dir, cfg.t_f_dir, img_name))
-        # mask_t = io.imread(os.path.join(cfg.data_dir, cfg.mask_t_dir, img_name), as_gray = True)
         
         t_b = io.imread(os.path.join(cfg.data_dir, cfg.t_b_dir, number+ '_'+cfg.t_b_dir +'.png'))
-        # print(t_b)
         i_t = io.imread(os.path.join(cfg.data_dir, cfg.i_t_dir, number+ '_'+cfg.i_t_dir +'.png'))
         i_s = io.imread(os.path.join(cfg.data_dir, cfg.i_s_dir,  number+ '_'+cfg.i_s_dir +'.png'))
         t_sk = io.imread(os.path.join(cfg.data_dir, cfg.t_sk_dir, number+ '_'+cfg.t_sk_dir +'.png'), as_gray = True)
         t_t = io.imread(os.path.join(cfg.data_dir, cfg.t_t_dir, number+ '_'+cfg.t_t_dir +'.png'))
         t_f = io.imread(os.path.join(cfg.data_dir, cfg.t_f_dir, number+ '_'+cfg.t_f_dir +'.png'))
         mask_t = io.imread(os.path.join(cfg.data_dir, cfg.mask_t_dir, number+ '_'+cfg.mask_t_dir +'.png'), as_gray = True)
-        
-        
-        
-        
-        
-        
-        
-        
         
         return [i_t, i_s, t_sk, t_t, t_b, t_f, mask_t]
         
