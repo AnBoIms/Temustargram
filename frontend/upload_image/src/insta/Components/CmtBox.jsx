@@ -1,6 +1,6 @@
 import { Component } from "react";
 import "../pages/Common.css";
-import "../pages/Main.css";
+import "../pages/InstaMain.css";
 
 import heart from "./Image/heart.png";
 

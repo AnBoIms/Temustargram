@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import MainNav from "./MainNav";
 import "./Main.css";
 
 const Logo = () => (
@@ -30,8 +30,8 @@ const UploadBox = () => {
   const processFile = (file) => {
     const { size: byteSize, type } = file;
 
-    if (byteSize > 10 * 1024 * 1024) {
-      alert("File size must be less than 10MB.");
+    if (byteSize > 3 * 1024 * 1024) {
+      alert("File size must be less than 3MB.");
       return;
     }
 
@@ -103,7 +103,9 @@ const UploadBox = () => {
   };
 
   return (
-    <div className="container">
+    <div>
+      <MainNav />
+      <div className="container">
         <div className = "alert">
           <h2>개인정보가 포함 여부를 검사할 사진을 선택해주세요.</h2>
         </div>
@@ -128,7 +130,7 @@ const UploadBox = () => {
             <>
                 <Logo />
                 <p className="preview_msg">클릭 혹은 파일을 이곳에 드롭하세요.</p>
-                <p className="preview_desc">파일당 최대 10MB</p>
+                <p className="preview_desc">파일당 최대 3MB</p>
             </>
             )}
             </label>
@@ -141,6 +143,8 @@ const UploadBox = () => {
        
       {responseMessage && <div id="responseMessage">{responseMessage}</div>}
     </div>
+    </div>
+    
   );
 };
 

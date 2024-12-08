@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; // useNavigate 추가
 import "./Main.css";
+import tempImg from "../assets/tempIMG.jpg";
+import MainNav from "./MainNav";
+
 
 const Select = () => {
   const location = useLocation();
@@ -65,7 +68,7 @@ const Select = () => {
             ctx.fill(); // 다각형 색 채우기
           } else {
             ctx.strokeStyle = "red"; // 기본 테두리 색상
-            ctx.lineWidth = 10;
+            ctx.lineWidth = 7;
             ctx.stroke();
           }
         });
@@ -125,11 +128,13 @@ const Select = () => {
 
   return (
     <div>
+      <MainNav />
+
       {error && <div style={{ color: "red", marginTop: "10px" }}>{error}</div>}
       <div className="container_row">
-        <div>
+        <div className = "box">
           <div className="alert_col">
-            <h2>사진에 표시된 객체들 중<br />가리고 싶은 대상을 선택해주세요.</h2>
+            <h2>사진에 표시된 객체들 중<br />가리고 싶은<br />대상을 선택해주세요.</h2>
           </div>
           <div className="center">
             <button className="upload_button" onClick={handleGoBack}>
@@ -140,12 +145,15 @@ const Select = () => {
             </button>
           </div>
         </div>
+        <div>
+          {imageSrc ? (
+            <canvas ref={canvasRef} className="select_preview" />
+            // <img src = {tempImg} className="select_preview"/>
+          ) : (
+            <div className="loader"></div>
+          )}
+        </div>
         
-        {imageSrc ? (
-          <canvas ref={canvasRef} className="select_preview" />
-        ) : (
-          <div>Loading image...</div>
-        )}
       </div>
     </div>
   );

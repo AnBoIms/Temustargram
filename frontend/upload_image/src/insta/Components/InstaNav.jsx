@@ -1,6 +1,6 @@
 import { Component } from "react";
 import "../pages/Common.css";
-import "../pages/Main.css";
+import "../pages/InstaMain.css";
 import logoText from "../Components/Image/logo_text.png";
 import upload from "../Components/Image/24uploadIcon.png";
 
