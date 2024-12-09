@@ -73,10 +73,13 @@ def crop_text_regions(selected_objects, results_dir):
                 print(f"Empty polygon for region in object ID {obj['id']}")
                 continue
 
+            expand_margin = 20
             x, y, w, h = cv2.boundingRect(polygon)
             height, width = cropped_image.shape[:2]
-            x_end, y_end = min(x + w, width), min(y + h, height)
-            x, y = max(x, 0), max(y, 0)
+            x = max(x - expand_margin, 0)
+            y = max(y - expand_margin, 0)
+            x_end = min(x + w + 2 * expand_margin, width)
+            y_end = min(y + h + 2 * expand_margin, height)
             cropped_region = cropped_image[y:y_end, x:x_end]
 
             if cropped_region.size == 0:
