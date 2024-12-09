@@ -141,8 +141,8 @@ const UploadBox = () => {
             </button>
         </div>
        
-      {responseMessage && <div id="responseMessage">{responseMessage}</div>}
-    </div>
+        {responseMessage && <div id="responseMessage">{responseMessage}</div>}
+      </div>
     </div>
     
   );

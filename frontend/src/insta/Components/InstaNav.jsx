@@ -1,12 +1,23 @@
 import { Component } from "react";
+import { useState } from 'react';
 import "../pages/Common.css";
 import "../pages/InstaMain.css";
 import logoText from "../Components/Image/logo_text.png";
 import upload from "../Components/Image/24uploadIcon.png";
+import UploadModal from './Upload';
 
-class MainNav extends Component {
-  render() {
-    return (
+function MainNav() {
+  const [isUploadModalOpen, setUploadModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setUploadModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setUploadModalOpen(false);
+  };
+
+  return (
       <nav>
         <div className="topBox">
           <div className="link-left">
@@ -22,12 +33,14 @@ class MainNav extends Component {
             <input type="search" placeholder="검색" />
           </div>
           <div className="link-right">
-            <a href="">
-              <img
-                className="upload-icon"
-                src={upload}
-              />
-            </a>
+          <button className="upload-button" onClick={handleOpenModal}>
+                <img
+                  className="upload-icon"
+                  src={upload}
+                />
+          </button>
+          {isUploadModalOpen && <UploadModal onClose={handleCloseModal} />}
+
             <a href="">
               <img
                 className="search-icon"
@@ -49,8 +62,8 @@ class MainNav extends Component {
           </div>
         </div>
       </nav>
-    );
-  }
+  );
+  
 }
 
 export default MainNav;

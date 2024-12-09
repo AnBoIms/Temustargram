@@ -7,6 +7,8 @@ import {
 } from 'react';
 import { BiPlus, BiUser, BiSend, BiSolidUserCircle } from 'react-icons/bi';
 import { MdOutlineArrowLeft, MdOutlineArrowRight } from 'react-icons/md';
+import chatgptLogo from './assets/chatgpt-logo.svg';
+
 
 function App() {
   const [text, setText] = useState('');
@@ -228,7 +230,7 @@ function App() {
           {!currentTitle && (
             <div className='empty-chat-container'>
               <img
-                src='assets/chatgpt-logo.svg'
+                src={chatgptLogo}
                 width={45}
                 height={45}
                 alt='ChatGPT'

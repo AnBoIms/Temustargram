@@ -8,6 +8,11 @@
     margin: 0 auto;
     justify-content: space-between;
   }
+
+  .topBox, .topBox * {
+    color: black;
+}
+
   
   .link-logo img {
     width: 150px;

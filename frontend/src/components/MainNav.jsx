@@ -12,6 +12,9 @@ import { useNavigate } from "react-router-dom";
 const MainNav = () => {
   const navigate = useNavigate(); // navigate 훅 사용
 
+  const handleGoHome = () => {
+    navigate("/");
+  };
   const handleGoToInsta = () => {
     navigate("/insta");
   };
@@ -24,9 +27,13 @@ const MainNav = () => {
       <div>
         <div className="topBox">
             <div className="link-logo">
+              <button onClick={handleGoHome}>    
                 <a href="">
                     <img src={logoText} />
                 </a>
+              </button>
+                
+                
                 <div className="line"></div>
                 <div className="info">
                   당신의 사진을 안전하게~<br></br>
@@ -41,7 +48,7 @@ const MainNav = () => {
                       src={InstaLogo} />
                 </a>
               </button>
-              <button className="share_button" onClick={handleGoToGpt}>    
+              <button onClick={handleGoToGpt}>    
                 <a href="">
                     <img                 
                     className="upload_icon"

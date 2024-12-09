@@ -7,6 +7,10 @@ import tenwook from "./Image/10wook.jpg";
 import dltnwjd22 from "./Image/dltnwjd22.jpg";
 import bomun from "./Image/bomunstella.jpg";
 import orhj from "./Image/orhj.jpg";
+import uzo from "./Image/uzo.jpg";
+import dduno from "./Image/dduno.jpg";
+
+
 
 
 
@@ -86,7 +90,7 @@ class MainRight extends Component {
                 <div className="follow">팔로우</div>
               </div>
               <div className="story-detail">
-                <img src={profileImg} />
+                <img src={uzo} />
                 <div className="story-info">
                   <div className="story-id">ardor_uzo</div>
                   <div className="story-friend">회원님을 팔로우합니다</div>
@@ -94,7 +98,7 @@ class MainRight extends Component {
                 <div className="follow">팔로우</div>
               </div>
               <div className="story-detail">
-                <img src={profileImg} />
+                <img src={dduno} />
                 <div className="story-info">
                   <div className="story-id">ddu_no</div>
                   <div className="story-friend">회원님을 팔로우합니다</div>

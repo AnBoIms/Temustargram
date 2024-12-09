@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import "./index.css";
+import App from "./GptApp.jsx";
+import "./GptIndex.css";
 
 // 렌더링 로직을 함수로 분리
 export default function renderApp() {

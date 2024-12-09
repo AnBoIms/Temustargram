@@ -150,18 +150,21 @@ const Select = () => {
       <div className="container_row">
         <div className="box">
           <div className="alert_col">
-            <h2>사진에 표시된 객체들 중<br />가리고 싶은<br />대상을 선택해주세요.</h2>
+            <h3>사진에 표시된<br />객체들 중<br />가리고 싶은 대상을<br />선택해주세요.</h3>
           </div>
-          <div className="center">
-            <button className="upload_button" onClick={handleGoBack}>
-              이전 페이지로
-            </button>
-            <button className="upload_button" onClick={handleSendToServer}>
-              선택 완료
-            </button>
+          <div >
+            <div className="align-center">
+              <button className="upload_button" onClick={handleGoBack}>
+                이전 페이지로
+              </button>
+              <button className="upload_button" onClick={handleSendToServer}>
+                선택 완료
+              </button>
+            </div>
           </div>
+          
         </div>
-        <div>
+        <div className="selectImg">
           {imageSrc ? (
             <canvas ref={canvasRef} className="select_preview" />
           ) : (
