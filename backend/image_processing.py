@@ -4,7 +4,7 @@ import os
 
 def distance(pt1, pt2):
     return np.linalg.norm(np.array(pt1) - np.array(pt2))
-    
+
 def crop_and_transform_object(img, obj, results_dir):
     polygon = np.array(obj["polygon"], dtype=np.float32)
     id_type = obj["type"]
@@ -48,32 +48,6 @@ def crop_and_transform_object(img, obj, results_dir):
     save_path = os.path.join(type_dir, f'{obj["id"]}_{id_type}.png')
     cv2.imwrite(save_path, transformed_img)
     return save_path, ordered_polygon
-
-def insert_image_final(base_img, insert_img, polygon):
-    polygon = np.float32(polygon)
-
-    insert_height, insert_width = insert_img.shape[:2]
-    insert_coords = np.float32([[0, 0], [0, insert_height], [insert_width, insert_height], [insert_width, 0]])
-
-    M = cv2.getPerspectiveTransform(insert_coords, polygon)
-    warped_img = cv2.warpPerspective(insert_img, M, (base_img.shape[1], base_img.shape[0]))
-
-    mask = cv2.warpPerspective(
-        np.ones((insert_height, insert_width), dtype=np.uint8) * 255,
-        M,
-        (base_img.shape[1], base_img.shape[0])
-    )
-
-    if len(base_img.shape) == 3 and base_img.shape[2] == 3:
-        mask = cv2.merge([mask, mask, mask])
-    mask_inv = cv2.bitwise_not(mask)
-    if warped_img.dtype != base_img.dtype:
-        warped_img = warped_img.astype(base_img.dtype)
-
-    base_background = cv2.bitwise_and(base_img, mask_inv)
-    final_result = cv2.add(base_background, warped_img)
-
-    return final_result
 
 def crop_text_regions(selected_objects, results_dir):
     os.makedirs(results_dir, exist_ok=True)
@@ -138,14 +112,14 @@ def merge_text_regions(obj):
             continue
 
         region_h, region_w = text_img.shape[:2]
-        polygon = np.array(region['polygon'], dtype=np.float32)
+        polygon = np.float32(region['polygon'])
 
         if polygon.size == 0:
             print(f"Error: Empty polygon for region {region['region_id']}")
             continue
 
         try:
-            text_coords = np.array([[0, 0], [region_w, 0], [region_w, region_h], [0, region_h]], dtype=np.float32)
+            text_coords = np.float32([[0, 0], [region_w, 0], [region_w, region_h], [0, region_h]])
             M = cv2.getPerspectiveTransform(text_coords, polygon)
         except cv2.error as e:
             print(f"Error: Failed to compute perspective transform for region {region['region_id']}: {e}")
@@ -153,15 +127,45 @@ def merge_text_regions(obj):
 
         warped_text_img = cv2.warpPerspective(text_img, M, (cropped_img.shape[1], cropped_img.shape[0]))
 
-        mask = np.zeros((cropped_img.shape[0], cropped_img.shape[1]), dtype=np.uint8)
-        cv2.fillPoly(mask, [polygon.astype(np.int32)], 255)
-
+        mask = cv2.warpPerspective(
+            np.ones((region_h, region_w), dtype=np.uint8) * 255, M, (cropped_img.shape[1], cropped_img.shape[0])
+        )
+        if len(cropped_img.shape)==3 and cropped_img.shape[2] ==3:
+            mask = cv2.merge([mask,mask,mask])
         mask_inv = cv2.bitwise_not(mask)
-        cropped_background = cv2.bitwise_and(cropped_img, cropped_img, mask=mask_inv)
 
-        warped_text_img = cv2.bitwise_and(warped_text_img, warped_text_img, mask=mask)
+        if warped_text_img.dtype != cropped_img.dtype:
+            warped_text_img = warped_text_img.astype(cropped_image_path.dtype)    
+
+        cropped_background = cv2.bitwise_and(cropped_img, mask_inv)
         cropped_img = cv2.add(cropped_background, warped_text_img)
 
     cv2.imwrite(cropped_image_path, cropped_img)
     print(f"Updated cropped image saved at {cropped_image_path}")
     return True
+
+def insert_image_final(base_img, insert_img, polygon):
+    polygon = np.float32(polygon)
+
+    insert_height, insert_width = insert_img.shape[:2]
+    insert_coords = np.float32([[0, 0], [0, insert_height], [insert_width, insert_height], [insert_width, 0]])
+
+    M = cv2.getPerspectiveTransform(insert_coords, polygon)
+    warped_img = cv2.warpPerspective(insert_img, M, (base_img.shape[1], base_img.shape[0]))
+
+    mask = cv2.warpPerspective(
+        np.ones((insert_height, insert_width), dtype=np.uint8) * 255,
+        M,
+        (base_img.shape[1], base_img.shape[0])
+    )
+
+    if len(base_img.shape) == 3 and base_img.shape[2] == 3:
+        mask = cv2.merge([mask, mask, mask])
+    mask_inv = cv2.bitwise_not(mask)
+    if warped_img.dtype != base_img.dtype:
+        warped_img = warped_img.astype(base_img.dtype)
+
+    base_background = cv2.bitwise_and(base_img, mask_inv)
+    final_result = cv2.add(base_background, warped_img)
+
+    return final_result
