@@ -38,11 +38,17 @@ def process_ocr_results(ocr_results):
     ocr_results = sorted(ocr_results, key=lambda x: x[0][0][1])
     closest_distance = float('inf')
     
-    # 주민등록증 텍스트 찾기 (가장 위쪽 텍스트)
+    # 주민등록증 텍스트 찾기
+    has_resident_id_text = False
     if ocr_results:
-        first_box = ocr_results[0]
-        coords, text, confidence = first_box
-        resident_id_top_y = (coords[0][1] + coords[2][1]) / 2
+        top_box = min(ocr_results, key=lambda box: box[0][0][1])
+        _, text, _ = top_box
+        if any(keyword in text for keyword in ['주', '민', '등', '록', '증']):
+            has_resident_id_text = True
+            resident_id_top_y = (top_box[0][0][1] + top_box[0][2][1]) / 2
+
+        if not has_resident_id_text:
+            return None
 
     
     # 이름, 주민등록번호, 주소 분류
