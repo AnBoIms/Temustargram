@@ -306,6 +306,10 @@ body {
   .feeds-bottom1 {
     padding: 0 10px;
   }
+
+  .feeds-bottom1 , .feeds-bottom1 *{
+    color:black !important;
+  }
   
   .moveIcon {
     position: absolute;

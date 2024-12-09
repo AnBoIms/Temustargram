@@ -59,7 +59,7 @@ const Output = () => {
                     <h1>개인정보 안보임스!</h1>
 
                 </div>
-                <div className = "preview">
+                <div className = "result">
                     {/* // 다음 img태그 주석하고 밑의 주석 풀기 */}
                     {/* <img className="img" ref={imgRef} src={tempImg} alt="Preview" /> */}
                     {imageSrc ? (
