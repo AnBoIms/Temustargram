@@ -30,8 +30,8 @@ const UploadBox = () => {
   const processFile = (file) => {
     const { size: byteSize, type } = file;
 
-    if (byteSize > 3 * 1024 * 1024) {
-      alert("File size must be less than 3MB.");
+    if (byteSize > 20 * 1024 * 1024) {
+      alert("File size must be less than 20MB.");
       return;
     }
 
@@ -130,7 +130,7 @@ const UploadBox = () => {
             <>
                 <Logo />
                 <p className="preview_msg">클릭 혹은 파일을 이곳에 드롭하세요.</p>
-                <p className="preview_desc">파일당 최대 3MB</p>
+                <p className="preview_desc">파일당 최대 20MB</p>
             </>
             )}
             </label>
