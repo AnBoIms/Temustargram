@@ -1,13 +1,13 @@
-from flask import Flask, request, jsonify, render_template, send_file
-from flask_cors import CORS
 from image_processing import crop_and_transform_object, insert_image_final, crop_text_regions, merge_text_regions
 from idcard_processor import ocr_result, process_ocr_results, process_bounding_box, apply_blur
-import numpy as np
-import os
-import logging
-import json
-import base64
+from flask import Flask, request, jsonify, render_template
+from utils import clear_static_directory
+from flask_cors import CORS
 import requests
+import logging
+import base64
+import json
+import os
 import cv2
 
 app = Flask(__name__)
@@ -36,7 +36,6 @@ def upload():
     file_path = os.path.join(IMAGE_FOLDER, filename)
     file.save(file_path)
 
-    file_url = f"/static/{filename}"
     mmdetection_server_url = 'http://mmdetection:5001/predict'
 
     try:
@@ -164,7 +163,6 @@ def load_result():
                     cv2.imwrite(cropped_image_path, image)
                     app.logger.info(f"OCR processed and saved: {cropped_image_path}")
 
-
         # crop text image
         text_regions_dir = os.path.join(IMAGE_FOLDER, 'text_regions')
         selected_objects = crop_text_regions(selected_objects, text_regions_dir)
@@ -228,7 +226,8 @@ def load_result():
 
         with open(result_image_path, "rb") as image_file:
             encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
-
+        clear_static_directory()
+        app.logger.info("Static directory cleaned up after processing.")
         return jsonify({
             "isSuccess": True,
             "message": "Success",
@@ -237,6 +236,16 @@ def load_result():
     except Exception as e:
         app.logger.error(f"Error in load_result: {e}")
         return jsonify({"isSuccess": False, "message": "Internal Server Error"}), 500
+
+@app.after_request
+def after_request(response):
+    if request.endpoint == 'load_result':
+        for filename in os.listdir(IMAGE_FOLDER):
+            file_path = os.path.join(IMAGE_FOLDER, filename)
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+                app.logger.info(f"Deleted file: {file_path}")
+    return response
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
