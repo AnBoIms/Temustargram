@@ -38,10 +38,10 @@ services:
     volumes:
       - ./backend/static:/srnet/static
 
-  # frontend:
-  #   build:
-  #     context: ./frontend/upload_image
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - backend
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
