@@ -1,4 +1,11 @@
+@font-face {
+  font-family: "anboims";
+  src: url("./fonts/Paperlogy-6SemiBold.ttf")
+}
+
 .container {
+  font-family: "anboims";
+
     width:960px;
     position:relative;
     margin: 0 auto;
@@ -9,7 +16,7 @@
     padding : 30px;
     border-radius: 10px;
     box-shadow : 0 0 10px 5px rgba(0, 0, 0, 0.5);
-    max-height : 960px;
+    height: auto; /* 부모 높이를 자식에 따라 유동적으로 설정 */
 }
 
 .container, .container * {
@@ -18,6 +25,8 @@
 
 
 .container_row {
+  font-family: "anboims";
+
   width:960px;
   position:relative;
   margin: 0 auto;
@@ -27,7 +36,7 @@
   padding : 30px;
   border-radius: 10px;
   box-shadow : 0 0 10px 5px rgba(0, 0, 0, 0.5);
-  height : 560px;
+  height: auto; /* 부모 높이를 자식에 따라 유동적으로 설정 */
 
 }
 
@@ -71,6 +80,11 @@
     margin-top: 50px;
     margin-bottom : 25px;
     text-align: center;
+  }
+
+  .text_output {
+    margin : 15px;
+    text-align : center;
   }
 
   .alert_col{
@@ -189,13 +203,13 @@
   }
 
   .share_icon{
-    width: 24px;
-    height: 24px;
+    width: 48px;
+    height: 48px;
     cursor: pointer;
-    background-color : white;
-    padding:2px;
+    /* background-color : white; */
+    padding: 5px;
     border-radius: 3px;
-
+    filter: invert(1);
   }
 
 .loader {
@@ -263,5 +277,13 @@
   display:flex;
   align-items: center;
   justify-content: center;
-  padding:5rem;
+  padding:1rem;
+}
+
+.result_img img{
+  max-width : 500px;
+}
+
+.buttons {
+  margin : 3rem;
 }

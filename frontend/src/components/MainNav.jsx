@@ -1,7 +1,7 @@
 import { Component } from "react";
 import "../index.css";
 import "./MainNav.css";
-import logoText from "../assets/AnboimsLogo.png";
+import logoText from "../assets/anboims.png";
 import InstaLogo from "../assets/instagramLogo.png";
 import chatgptLogo from "../assets/chatgptLogo.png";
 import { useNavigate } from "react-router-dom";
@@ -24,12 +24,13 @@ const MainNav = () => {
 
 
   return (
-      <div>
-        <div className="topBox">
+      <div className ="nav-blue">
+        <div className="anboimsNav">
             <div className="link-logo">
               <button onClick={handleGoHome}>    
                 <a href="">
-                    <img src={logoText} />
+                    <img src={logoText} 
+                    className = "anboims"/>
                 </a>
               </button>
                 
@@ -59,7 +60,6 @@ const MainNav = () => {
             </div>
 
         </div>
-        <div className="underline"></div>
 
       </div>
   );

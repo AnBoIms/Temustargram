@@ -1,6 +1,14 @@
 * {
     box-sizing: border-box;
+  }
+
+  nav {
     font-family: "Segoe UI";
+  }
+
+  .main2, .main-right {
+    font-family: "Segoe UI";
+
   }
   
   /* html {

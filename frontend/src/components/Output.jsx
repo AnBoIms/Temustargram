@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom"; // useNavigate 추가
 import "./Main.css";
-import { useRef } from "react";
-// import { useNavigate } from "react-router-dom";
 import MainNav from "./MainNav";
 
 
-import tempImg from "../assets/tempIMG.jpg";
+import tempImg from "../assets/temp2.jpg";
 import InstaLogo from "../assets/instagramLogo.png";
 import chatgptLogo from "../assets/chatgptLogo.png";
 import downloadLogo from "../assets/downloadLogo.png";
@@ -14,14 +12,16 @@ import downloadLogo from "../assets/downloadLogo.png";
 const Output = () => {
     const imgRef = useRef(null);
     const navigate = useNavigate(); // navigate 훅 사용
-
-
+   
+    const [selectedObjectIds, setSelectedObjectIds] = useState([]); // 선택된 객체 ID 배열
     const location = useLocation();
+
+
     const [imageSrc, setImageSrc] = useState(null); // 이미지를 저장할 상태
     const [error, setError] = useState(null); // 에러 상태
   
     useEffect(() => {
-      // location.state로 전달된 데이터 확인
+      location.state
       if (location.state && location.state.result) {
         const base64Image = location.state.result;
 
@@ -33,6 +33,12 @@ const Output = () => {
         setError("이미지가 전달되지 않았습니다.");
       }
     }, [location.state]);
+    // -----------------------------------
+    //     setImageSrc(tempImg);
+        
+    //     setError("");
+    // }, []);
+  //---------------------------
 
     const handleDownload = () => {
         // Get the image URL and create a link
@@ -55,18 +61,15 @@ const Output = () => {
             <MainNav />
 
             <div className="container">
-                <div className = "alert">
+                <div className = "text_output">
                     <h1>개인정보 안보임스!</h1>
-
                 </div>
                 <div className = "result">
-                    {/* // 다음 img태그 주석하고 밑의 주석 풀기 */}
-                    {/* <img className="img" ref={imgRef} src={tempImg} alt="Preview" /> */}
                     {imageSrc ? (
-                        <div>
-                        <img
-                            src={imageSrc}
-                        />
+                        <div className = "result_img">
+                            <img
+                                src={imageSrc}
+                            />
                         </div>
                     ) : (
                         <div className="loader"></div>
@@ -74,7 +77,7 @@ const Output = () => {
                 </div>
         
                 
-                <div>
+                <div className = "buttons">
                     <button className="share_button"  onClick={handleGoToInsta}>
                         <a href="">
                             <img 

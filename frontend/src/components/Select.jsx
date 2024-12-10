@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Main.css";
 import MainNav from "./MainNav";
-
+import tempImg from "../assets/temp2.jpg";
+// src\assets\temp2.jpg
+// src\components\Select.jsx
 const Select = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,6 +31,26 @@ const Select = () => {
       setError("이미지 데이터가 전달되지 않았습니다.");
     }
   }, [location.state]);
+  //------------------------------- 위아래로 주석 풀기/채우기
+  //   setImageSrc(tempImg);
+  //   setObjects([
+  //     // 임시 객체 데이터 추가
+  //     {
+  //       id: 1,
+  //       polygon: [
+  //         [50, 50],
+  //         [500, 50],
+  //         [500, 500],
+  //         [50, 500],
+  //       ],
+  //       type: "id_card"
+  //       // type: "sign"
+  //     },
+  //   ]);
+  //   setError("");
+  // }, []);
+  // -----------------------------------
+
 
   useEffect(() => {
     if (!imageSrc || !canvasRef.current) return;
@@ -46,7 +68,7 @@ const Select = () => {
         ctx.drawImage(img, 0, 0);
 
         objects.forEach((obj) => {
-          const { polygon, id } = obj;
+          const { polygon, id, type } = obj;
 
           ctx.beginPath();
           polygon.forEach(([x, y], index) => {
@@ -59,10 +81,20 @@ const Select = () => {
           ctx.closePath();
 
           if (selectedObjectIds.includes(id)) {
-            ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+            if(type == "id_card"){
+              ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+            }
+            else if(type == "sign"){
+              ctx.fillStyle = "rgba(255, 255, 0, 0.3)";
+            }
             ctx.fill();
           } else {
-            ctx.strokeStyle = "red";
+            if(type == "id_card"){
+              ctx.strokeStyle = "red";
+            }
+            else if(type == "sign"){
+              ctx.strokeStyle = "yellow";
+            }
             ctx.lineWidth = 7;
             ctx.stroke();
           }
