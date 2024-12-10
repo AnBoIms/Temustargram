@@ -5,6 +5,8 @@ import MainNav from "./MainNav";
 import tempImg from "../assets/temp2.jpg";
 // src\assets\temp2.jpg
 // src\components\Select.jsx
+
+
 const Select = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ const Select = () => {
   const [error, setError] = useState(""); // 에러 메시지
   const [selectedObjectIds, setSelectedObjectIds] = useState([]); // 선택된 객체 ID 배열
   const [serverMessage, setServerMessage] = useState(""); // 서버 응답 메시지
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   useEffect(() => {
     if (location.state && location.state.image && location.state.coor) {
@@ -152,6 +155,8 @@ const Select = () => {
       return;
     }
 
+    setIsLoading(true); // 로딩 시작
+
     try {
       const response = await fetch("http://localhost:5000/load_result", {
         method: "POST",
@@ -169,6 +174,8 @@ const Select = () => {
       }
     } catch (error) {
       setError("서버 요청에 실패했습니다. 네트워크 상태를 확인해주세요.");
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   };
 
@@ -178,8 +185,17 @@ const Select = () => {
 
       {error && <div style={{ color: "red", marginTop: "10px" }}>{error}</div>}
       {serverMessage && <div style={{ color: "green", marginTop: "10px" }}>{serverMessage}</div>}
-
-      <div className="container_row">
+      {isLoading && (
+        <div className="lock-loading">
+          <div className="lock">
+            <div className="lock-body"></div>
+            <div className="lock-shackle"></div>
+          </div>
+          <h3>잠시만 기다려주세요...</h3>
+        </div>
+      )}
+      <div className="container_row" style={{ display: isLoading ? "none" : "flex" }}>
+     
         <div className="box">
           <div className="alert_col">
             <h3>사진에 표시된<br />객체들 중<br />가리고 싶은 대상을<br />선택해주세요.</h3>

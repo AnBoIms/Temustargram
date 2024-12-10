@@ -17,6 +17,8 @@ const Logo = () => (
 
 const UploadBox = () => {
   const [isActive, setActive] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [imagePreview, setImagePreview] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const navigate = useNavigate(); // 페이지 이동을 위한 hook
@@ -99,50 +101,61 @@ const UploadBox = () => {
     } catch (error) {
       console.error("Error uploading file:", error);
       setResponseMessage("An error occurred while uploading the file.");
+    } finally {
+      setLoading(false); // 로딩 상태 비활성화
     }
   };
 
   return (
     <div>
       <MainNav />
-      <div className="container">
-        <div className = "alert">
-          <h2>개인정보가 포함 여부를 검사할 사진을 선택해주세요.</h2>
+      {loading ? (
+        <div className="loading-screen">
+          <div className="align-center">
+            <div className="loader"></div>
+          </div>
         </div>
-        <div>
-            <label
-                className={`preview${isActive ? " active" : ""}`}
-                onDragEnter={handleDragStart}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragEnd}
-                onDrop={handleDrop}
-            >
-            <input type="file" className="file" onChange={handleUpload} accept="image/*" />
-            {imagePreview ? (
-            <div className="image_preview">
-                <img
-                src={imagePreview}
-                alt="Preview"
-                style={{ maxWidth: "100%", maxHeight: "300px", objectFit: "contain" }}
-                />
-            </div>
-            ) : (
-            <>
-                <Logo />
-                <p className="preview_msg">클릭 혹은 파일을 이곳에 드롭하세요.</p>
-                <p className="preview_desc">파일당 최대 20MB</p>
-            </>
-            )}
-            </label>
+      ) : (
+        <div className="container">
+          <div className = "alert">
+            <h2>개인정보가 포함 여부를 검사할 사진을 선택해주세요.</h2>
+          </div>
+          <div>
+              <label
+                  className={`preview${isActive ? " active" : ""}`}
+                  onDragEnter={handleDragStart}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragEnd}
+                  onDrop={handleDrop}
+              >
+              <input type="file" className="file" onChange={handleUpload} accept="image/*" />
+              {imagePreview ? (
+              <div className="image_preview">
+                  <img
+                  src={imagePreview}
+                  alt="Preview"
+                  style={{ maxWidth: "100%", maxHeight: "300px", objectFit: "contain" }}
+                  />
+              </div>
+              ) : (
+              <>
+                  <Logo />
+                  <p className="preview_msg">클릭 혹은 파일을 이곳에 드롭하세요.</p>
+                  <p className="preview_desc">파일당 최대 20MB</p>
+              </>
+              )}
+              </label>
+          </div>
+          <div>
+              <button onClick={handleSubmit} className="upload_button">
+                  이미지 제출
+              </button>
+          </div>
+        
+          {responseMessage && <div id="responseMessage">{responseMessage}</div>}
         </div>
-        <div>
-            <button onClick={handleSubmit} className="upload_button">
-                이미지 제출
-            </button>
-        </div>
-       
-        {responseMessage && <div id="responseMessage">{responseMessage}</div>}
-      </div>
+      )}
+      
     </div>
     
   );
