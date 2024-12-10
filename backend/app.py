@@ -234,8 +234,6 @@ def load_result():
         app.logger.error(f"Error in load_result: {e}")
         return jsonify({"isSuccess": False, "message": "Internal Server Error"}), 500
 
-import shutil
-
 @app.after_request
 def after_request(response):
     if request.endpoint == 'load_result':

@@ -121,7 +121,7 @@ def merge_text_regions(obj):
             print(f"Error: Empty polygon for region {region['region_id']}")
             continue
         
-        margin = 30
+        margin = 10
         polygon[0] += [-margin, -margin] 
         polygon[1] += [margin, -margin]   
         polygon[2] += [margin, margin]    
