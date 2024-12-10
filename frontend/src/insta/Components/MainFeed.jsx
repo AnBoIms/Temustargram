@@ -1,4 +1,6 @@
 import { Component } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import "../pages/Common.css";
 import "../pages/InstaMain.css";
 import MainRight from "./MainRight";
@@ -14,41 +16,48 @@ import talk from "./Image/talk.png";
 import share from "./Image/share.png";
 import bookmark from "./Image/bookmark.png";
 
-class MainFeed extends Component {
-  constructor(props) {
-    super(props);
+const MainFeed = ({ location }) => {
+  const [error, setError] = useState(null); // 에러 상태
+  const [comment, setComment] = useState(""); // input 값
+  const [comments, setComments] = useState([]); // 입력된 댓글 배열
+  const [imageSrc, setImageSrc] = useState(null); // 이미지를 저장할 상태
+  // const [error, setError] = useState(null); // 에러 상태
 
-    this.state = {
-      comment: "", //input창
-      comments: [] //입력된 댓글을 포함하고있는 배열
-    };
-  }
-
-  //input값 받는 onChange 함수
-  newComment = e => {
-    this.setState({
-      comment: e.target.value
-    });
+   // input값 받는 onChange 함수
+  const newComment = (e) => {
+    setComment(e.target.value);
   };
 
-  //추가된 input을 배열에 넣는 onClick 함수
-  // comment:"" 하는 이유는 클릭 후 인풋안에 있던 텍스트를 없애기 위해서
-  addComment = e => {
-    this.setState({
-      comments: this.state.comments.concat(this.state.comment),
-      comment: ""
-    });
+  // 추가된 input을 배열에 넣는 onClick 함수
+  const addComment = () => {
+    setComments([...comments, comment]);
+    setComment(""); // 입력 후 텍스트를 비워줌
   };
 
-  //map을 return하는 함수
-  //매개변수 꼭 설정(arr) -> 함수를 실행할 때 받는 배열인 인자에 map를 쓰기 때문에
-  //cmt = this.state.comments이고 이 값을 CmtBox의 props로 전달
-  cmtUpdate = arr => {
-    return arr.map(cmt => <CmtBox data={cmt} />);
+  // map을 return하는 함수
+  const cmtUpdate = (arr) => {
+    return arr.map((cmt, index) => <CmtBox key={index} data={cmt} />);
   };
 
-  render() {
-    return (
+  useEffect(() => {
+    if (location.state && location.state.result) {
+        const base64Image = location.state.result;
+
+        if (!base64Image.startsWith("data:image/")) {
+            setImageSrc(`data:image/png;base64,${base64Image}`);
+        } else {
+            setImageSrc(base64Image);
+        }
+    } else {
+        setError("이미지가 전달되지 않았습니다.");
+    }
+}, [location.state]);
+//-----------------------------------------
+    //   setImageSrc(profileImg);
+    // }, []);
+//-----------------------------------------
+
+  return (
       <section className="main2">
         <article>
           <div className="feed1">
@@ -62,7 +71,9 @@ class MainFeed extends Component {
               </header>
               <div className="main-image">
                 <a href="">
-                  <img src={feedMain} />
+        
+                  <img src={imageSrc} />    
+
                 </a>
               </div>
             </div>
@@ -110,24 +121,23 @@ class MainFeed extends Component {
                     </div>
 
                     {/* 새로운 댓글 추가할 위치 */}
-                    {/* this.state.comments를 인자로 받음 */}
-                    {this.cmtUpdate(this.state.comments)}
-                  </div>
+                  {cmtUpdate(comments)}
                 </div>
-                <div className="uploadTime">15분 전</div>
               </div>
-              <section className="submit-box">
-                <div>
-                  <input
-                    className="submitComment"
-                    type="text"
-                    placeholder="댓글 달기..."
-                    onChange={this.newComment}
-                    value={this.state.comment}
-                  />
+              <div className="uploadTime">15분 전</div>
+            </div>
+            <section className="submit-box">
+              <div>
+                <input
+                  className="submitComment"
+                  type="text"
+                  placeholder="댓글 달기..."
+                  onChange={newComment}
+                  value={comment}
+                />
 
                   {/* comment추가 이벤트 */}
-                  <button className="submitBtn" onClick={this.addComment}>
+                  <button className="submitBtn" onClick={addComment}>
                     게시
                   </button>
                 </div>
@@ -137,8 +147,8 @@ class MainFeed extends Component {
         </article>
         <MainRight />
       </section>
-    );
-  }
+  );
+  
 }
 
 export default MainFeed;
