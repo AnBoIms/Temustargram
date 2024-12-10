@@ -1,12 +1,25 @@
-.topBox {
-    background-color: white;
+@font-face {
+  font-family: "anboims";
+  src: url("./fonts/Paperlogy-6SemiBold.ttf")
+}
+
+.anboimsNav {
+    background-color: #1D3251;
     display: flex;
     align-items: center;
     padding: 0px 20px;
     width:960px;
     height: 77px;
     margin: 0 auto;
+    font-family: "anboims";
+
     justify-content: space-between;
+  }
+
+  .nav-blue{
+    background-color: #1D3251;
+    color : white;
+    margin-bottom : 30px;
   }
 
   .topBox, .topBox * {
@@ -28,13 +41,14 @@
     height: 24px;
     cursor: pointer;
     margin-left: 26px;
+    filter: invert(1);
 
   }
   
   .line {
     width: 1px;
     height: 45px;
-    background-color: #262626;
+    background-color: white;
     margin: 0 16px;
   }
 
@@ -54,3 +68,9 @@
     all: unset; /* 기본 스타일 제거 */
     display: inline-block; /* 이미지 크기에 맞춰 버튼 크기를 조정 */
   }
+
+  .anboims {
+    filter: invert(1);
+  }
+
+
