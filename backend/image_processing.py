@@ -120,6 +120,12 @@ def merge_text_regions(obj):
         if polygon.size == 0:
             print(f"Error: Empty polygon for region {region['region_id']}")
             continue
+        
+        margin = 30
+        polygon[0] += [-margin, -margin] 
+        polygon[1] += [margin, -margin]   
+        polygon[2] += [margin, margin]    
+        polygon[3] += [-margin, margin]
 
         try:
             text_coords = np.float32([[0, 0], [region_w, 0], [region_w, region_h], [0, region_h]])
