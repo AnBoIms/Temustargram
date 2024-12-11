@@ -5,7 +5,6 @@ from flask_cors import CORS
 import requests
 import logging
 import base64
-import shutil
 import json
 import os
 import cv2
@@ -146,7 +145,7 @@ def load_result():
                 processed_results = process_ocr_results(ocr_results)
                 image = cv2.imread(cropped_image_path)
                 
-                if not processed_results or not processed_results["name"] or not processed_results["resident_id"] or not processed_results["address"]:
+                if not processed_results["name"] and not processed_results["resident_id"] and not processed_results["address"]:
                     success = apply_blur(cropped_image_path, cropped_image_path)
                     if success:
                         app.logger.info(f"Blur process completed for {cropped_image_path}")
@@ -234,20 +233,6 @@ def load_result():
         app.logger.error(f"Error in load_result: {e}")
         return jsonify({"isSuccess": False, "message": "Internal Server Error"}), 500
 
-@app.after_request
-def after_request(response):
-    if request.endpoint == 'load_result':
-        for filename in os.listdir(IMAGE_FOLDER):
-            file_path = os.path.join(IMAGE_FOLDER, filename)
-            try:
-                if os.path.isfile(file_path) or os.path.islink(file_path):
-                    os.unlink(file_path) 
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path) 
-            except Exception as e:
-                app.logger.error(f"Error deleting {file_path}: {e}")
-    app.logger.info(f"images Deleted")
-    return response
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
