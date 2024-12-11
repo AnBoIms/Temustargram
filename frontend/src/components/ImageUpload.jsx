@@ -87,6 +87,7 @@ const UploadBox = () => {
         method: "POST",
         body: formData,
       });
+      setLoading(true); // 로딩 상태 활성화
 
       if (response.ok) {
         const result = await response.json();

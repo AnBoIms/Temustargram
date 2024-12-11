@@ -8,9 +8,12 @@ import {Button} from '@nextui-org/react';
 import confetti from 'canvas-confetti';
 
 import tempImg from "../assets/temp2.jpg";
-import InstaLogo from "../assets/instagramLogo.png";
+import kakao from "../assets/kakao.png";
 import pangpang from "../assets/pang.png";
 import downloadLogo from "../assets/downloadLogo.png";
+
+// kakao 기능 동작을 위해 넣어준다.
+const { Kakao } = window;
 
 const Output = () => {
     const imgRef = useRef(null);
@@ -22,6 +25,21 @@ const Output = () => {
     const confettiInstance = useRef(null); // Confetti 인스턴스
 
     const buttonRef = useRef(null); // 여기서 buttonRef를 정의합니다.
+
+    const realUrl = "http://localhost:3000" //나중에 배포시에 주소 바꾸기
+    // 로컬 주소 (localhost 3000 같은거)
+    const resultUrl = window.location.href;
+
+    useEffect(()=>{
+    	// init 해주기 전에 clean up 을 해준다.
+        Kakao.cleanup();
+        // 자신의 js 키를 넣어준다.
+        Kakao.init('c2cbb14eb64047ab9fe34925c8db79ad');
+        // 잘 적용되면 true 를 뱉는다.
+        console.log(Kakao.isInitialized());
+    },[]);
+
+    
 
     useEffect(() => {
         if (location.state && location.state.result) {
@@ -48,17 +66,46 @@ const Output = () => {
         }
     };
 
-    const handleGoToInsta = () => {
-        navigate("/insta");
-    };
+    // const handleGoToInsta = () => {
+    //     navigate("/insta");
+    // };
 
     const handleConfetti = () => {
         confetti({
             particleCount: 150, // 파티클 수
             spread: 70, // 퍼짐 범위
-            origin: { x: 0.5, y: 0.5 }, // 화면 중앙에서 효과 발생
+            origin: { x: 0.3, y: 0.5}, // 화면 중앙에서 효과 발생
+        });
+        confetti({
+            particleCount: 150, // 파티클 수
+            spread: 70, // 퍼짐 범위
+            origin: { x: 0.7, y: 0.5}, // 화면 중앙에서 효과 발생
         });
     };
+
+    const shareKakao = () =>{
+
+        Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+                title: '개인정보 안보임스',
+                description: '개인정보 안보임스',
+                imageUrl:
+                'https://mud-kage.kakao.com/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
+                link: {
+                    mobileWebUrl: realUrl,
+                },
+            },
+            buttons: [
+                {
+                    title: '사진 가리러 가기',
+                    link: {
+                    mobileWebUrl: realUrl,
+                    },
+                },
+                ],
+            });
+    }
 
     return (
         <div>
@@ -66,7 +113,7 @@ const Output = () => {
 
             <div className="container" style={{ position: "relative" }}>
                 {/* Confetti Canvas */}
-                <Confetti
+                {/* <Confetti
                     refConfetti={(instance) => {
                         console.log("Confetti instance:", instance); // 디버깅 로그
 
@@ -82,7 +129,7 @@ const Output = () => {
                         height: "100%",
                         pointerEvents: "none",
                     }}
-                />
+                /> */}
 
                 <div className="text_output">
                     <h1>개인정보 안보임스!</h1>
@@ -98,8 +145,11 @@ const Output = () => {
                 </div>
 
                 <div className="buttons">
-                    <button className="share_button" onClick={handleGoToInsta}>
-                        <img className="share_icon" src={InstaLogo} alt="Instagram" />
+                    <button className='share_button' onClick={() => {
+                            shareKakao()
+                        }}
+                    >                     
+                        <img className="share_icon" src={kakao} alt="Instagram" />
                     </button>
                     <Button
                         ref={buttonRef}

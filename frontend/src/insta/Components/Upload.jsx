@@ -19,7 +19,7 @@ function UploadModal({ onClose }) {
   const [isActive, setActive] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
-  const [isUploaded, setIsUploaded] = useState(false);  // 업로드 완료 상태 관리
+  const [isUploaded, setIsUploaded] = useState(true);  // 업로드 완료 상태 관리
 
   const [objects, setObjects] = useState([]); // 객체 데이터 추가
   const [selectedObjectIds, setSelectedObjectIds] = useState([]); // 선택된 객체 ID 배열
@@ -37,40 +37,40 @@ function UploadModal({ onClose }) {
   };
 
   useEffect(() => {
-    if (location.state && location.state.image && location.state.coor) {
-      const base64Image = location.state.image;
+  //   if (location.state && location.state.image && location.state.coor) {
+  //     const base64Image = location.state.image;
 
-      // base64 형식의 이미지 처리
-      if (!base64Image.startsWith("data:image/")) {
-        setImagePreview(`data:image/png;base64,${base64Image}`);
-      } else {
-        setImagePreview(base64Image);
-      }
+  //     // base64 형식의 이미지 처리
+  //     if (!base64Image.startsWith("data:image/")) {
+  //       setImagePreview(`data:image/png;base64,${base64Image}`);
+  //     } else {
+  //       setImagePreview(base64Image);
+  //     }
 
-      setObjects(location.state.coor); // 전달된 객체 데이터 설정
-      setResponseMessage(""); // 초기화
-    } else {
-      setResponseMessage("이미지 데이터가 전달되지 않았습니다/.");
-    }
-  }, [location.state]);
+  //     setObjects(location.state.coor); // 전달된 객체 데이터 설정
+  //     setResponseMessage(""); // 초기화
+  //   } else {
+  //     setResponseMessage("이미지 데이터가 전달되지 않았습니다/.");
+  //   }
+  // }, [location.state]);
   //------------------------------- 위아래로 주석 풀기/채우기
-  //   setImagePreview(tempImg);
-  //   setObjects([
-  //     // 임시 객체 데이터 추가
-  //     {
-  //       id: 1,
-  //       polygon: [
-  //         [50, 50],
-  //         [500, 50],
-  //         [500, 500],
-  //         [50, 500],
-  //       ],
-  //       // type: "id_card"
-  //       type: "sign"
-  //     },
-  //   ]);
-  //   setError("이미지 데이터가 전달되지 않았습니다.");
-  // }, []);
+    setImagePreview(tempImg);
+    setObjects([
+      // 임시 객체 데이터 추가
+      {
+        id: 1,
+        polygon: [
+          [50, 50],
+          [500, 50],
+          [500, 500],
+          [50, 500],
+        ],
+        // type: "id_card"
+        type: "sign"
+      },
+    ]);
+    setError("이미지 데이터가 전달되지 않았습니다.");
+  }, []);
   // -----------------------------------
 
   const processFile = (file) => {
@@ -324,7 +324,7 @@ function UploadModal({ onClose }) {
               </div>
           )}  {/* 여기에서 조건문 끝 */}
           
-          {responseMessage && <div id="responseMessage">{responseMessage}</div>}
+          {/* {responseMessage && <div id="responseMessage">{responseMessage}</div>} */}
         </div>
       </div>
     </div>
