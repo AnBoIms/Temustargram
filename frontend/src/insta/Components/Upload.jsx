@@ -19,7 +19,7 @@ function UploadModal({ onClose }) {
   const [isActive, setActive] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
-  const [isUploaded, setIsUploaded] = useState(true);  // 업로드 완료 상태 관리
+  const [isUploaded, setIsUploaded] = useState(false);  // 업로드 완료 상태 관리
 
   const [objects, setObjects] = useState([]); // 객체 데이터 추가
   const [selectedObjectIds, setSelectedObjectIds] = useState([]); // 선택된 객체 ID 배열
