@@ -38,17 +38,10 @@ def process_ocr_results(ocr_results):
     ocr_results = sorted(ocr_results, key=lambda x: x[0][0][1])
     closest_distance = float('inf')
     
-    # 주민등록증 텍스트 찾기
-    has_resident_id_text = False
     if ocr_results:
-        top_box = min(ocr_results, key=lambda box: box[0][0][1])
-        _, text, _ = top_box
-        if any(keyword in text for keyword in ['주', '민', '등', '록', '증']):
-            has_resident_id_text = True
-            resident_id_top_y = (top_box[0][0][1] + top_box[0][2][1]) / 2
-
-        if not has_resident_id_text:
-            return None
+        first_box = ocr_results[0]
+        coords, text, confidence = first_box
+        resident_id_top_y = (coords[0][1] + coords[2][1]) / 2
 
     
     # 이름, 주민등록번호, 주소 분류
@@ -149,9 +142,6 @@ def process_bounding_box(image, texture_path, bounding_box):
 def apply_blur(image_path, output_path, blur_intensity=55):
 
     image = cv2.imread(image_path)
-    if image is None:
-        print(f"Error: Cannot load image at {image_path}")
-        return False
 
     # Gaussian Blur 적용
     blurred_image = cv2.GaussianBlur(image, (blur_intensity, blur_intensity), 0)
