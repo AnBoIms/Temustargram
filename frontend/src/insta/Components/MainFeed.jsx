@@ -21,7 +21,8 @@ const MainFeed = ({ location }) => {
   const [comment, setComment] = useState(""); // input 값
   const [comments, setComments] = useState([]); // 입력된 댓글 배열
   const [imageSrc, setImageSrc] = useState(null); // 이미지를 저장할 상태
-  // const [error, setError] = useState(null); // 에러 상태
+  const defaultImage = profileImg; // 기본 이미지
+  const defaultError = "이미지가 전달되지 않았습니다."; // 기본 에러 메시지
 
    // input값 받는 onChange 함수
   const newComment = (e) => {
@@ -39,24 +40,47 @@ const MainFeed = ({ location }) => {
     return arr.map((cmt, index) => <CmtBox key={index} data={cmt} />);
   };
 
-  useEffect(() => {
-    if (location.state && location.state.result) {
-        const base64Image = location.state.result;
+  // useEffect(() => {
+  //   const base64Image = location?.state?.result || defaultImage;
 
-        if (!base64Image.startsWith("data:image/")) {
-            setImageSrc(`data:image/png;base64,${base64Image}`);
-        } else {
-            setImageSrc(base64Image);
-        }
-    } else {
-        setError("이미지가 전달되지 않았습니다.");
-    }
-}, [location.state]);
+  //   if (!base64Image.startsWith("data:image/")) {
+  //     setImageSrc(`data:image/png;base64,${base64Image}`);
+  //   } else {
+  //     setImageSrc(base64Image);
+  //   }
+
+  //   if (!location.state || !location.state.result) {
+  //     setError(defaultError); // 기본 에러 메시지 설정
+  //   }
+  // }, [location.state]);
 //-----------------------------------------
     //   setImageSrc(profileImg);
-    // }, []);
+    // }, [location]);
 //-----------------------------------------
 
+  useEffect(() => {
+    if (location?.state?.result) {
+      const base64Image = location.state.result;
+
+      if (!base64Image.startsWith("data:image/")) {
+        setImageSrc(`data:image/png;base64,${base64Image}`);
+      } else {
+        setImageSrc(base64Image);
+      }
+    } else {
+      setImageSrc(defaultImage); // 기본 이미지로 설정
+      setError(defaultError); // 기본 에러 메시지 설정
+    }
+  }, [location]);
+
+  const handleUploadResponse = (response) => {
+    if (response && response.image) {
+      setImageSrc(response.image); // 서버에서 받은 이미지 URL 또는 Base64 문자열 반영
+    } else {
+      setError("업로드된 이미지가 유효하지 않습니다.");
+    }
+  };
+//-----------------------------------------------------------
   return (
       <section className="main2">
         <article>

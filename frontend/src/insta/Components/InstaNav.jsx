@@ -2,7 +2,7 @@ import { Component } from "react";
 import { useState } from 'react';
 import "../pages/Common.css";
 import "../pages/InstaMain.css";
-import logoText from "../Components/Image/logo_text.png";
+import logoText from "../Components/Image/temustagram.png";
 import upload from "../Components/Image/24uploadIcon.png";
 import UploadModal from './Upload';
 

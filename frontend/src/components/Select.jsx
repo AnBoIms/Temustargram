@@ -19,39 +19,39 @@ const Select = () => {
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
 
   useEffect(() => {
-    if (location.state && location.state.image && location.state.coor) {
-      const base64Image = location.state.image;
+  //   if (location.state && location.state.image && location.state.coor) {
+  //     const base64Image = location.state.image;
 
-      if (!base64Image.startsWith("data:image/")) {
-        setImageSrc(`data:image/png;base64,${base64Image}`);
-      } else {
-        setImageSrc(base64Image);
-      }
+  //     if (!base64Image.startsWith("data:image/")) {
+  //       setImageSrc(`data:image/png;base64,${base64Image}`);
+  //     } else {
+  //       setImageSrc(base64Image);
+  //     }
 
-      setObjects(location.state.coor); // 전달된 객체 데이터 설정
-      setError(""); // 에러 초기화
-    } else {
-      setError("이미지 데이터가 전달되지 않았습니다.");
-    }
-  }, [location.state]);
+  //     setObjects(location.state.coor); // 전달된 객체 데이터 설정
+  //     setError(""); // 에러 초기화
+  //   } else {
+  //     setError("이미지 데이터가 전달되지 않았습니다.");
+  //   }
+  // }, [location.state]);
   //------------------------------- 위아래로 주석 풀기/채우기
-  //   setImageSrc(tempImg);
-  //   setObjects([
-  //     // 임시 객체 데이터 추가
-  //     {
-  //       id: 1,
-  //       polygon: [
-  //         [50, 50],
-  //         [500, 50],
-  //         [500, 500],
-  //         [50, 500],
-  //       ],
-  //       type: "id_card"
-  //       // type: "sign"
-  //     },
-  //   ]);
-  //   setError("");
-  // }, []);
+    setImageSrc(tempImg);
+    setObjects([
+      // 임시 객체 데이터 추가
+      {
+        id: 1,
+        polygon: [
+          [50, 50],
+          [500, 50],
+          [500, 500],
+          [50, 500],
+        ],
+        type: "id_card"
+        // type: "sign"
+      },
+    ]);
+    setError("");
+  }, []);
   // -----------------------------------
 
 
@@ -156,6 +156,7 @@ const Select = () => {
     }
 
     setIsLoading(true); // 로딩 시작
+    console.log(JSON.stringify({ selected_ids: selectedObjectIds }));
 
     try {
       const response = await fetch("http://localhost:5000/load_result", {
@@ -164,6 +165,7 @@ const Select = () => {
         body: JSON.stringify({ selected_ids: selectedObjectIds }),
       });
 
+      // console.log(JSON.stringify({ selected_ids: selectedObjectIds }));
       const data = await response.json();
 
       if (response.ok) {

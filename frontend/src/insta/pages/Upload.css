@@ -30,7 +30,7 @@
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
-    margin-top: 10px;
+    margin: 10px;
     cursor: pointer;
   }
   
@@ -62,8 +62,17 @@
     padding : 30px;
     border-radius: 10px;
     box-shadow : 0 0 10px 5px rgba(0, 0, 0, 0.5);
-    max-height : 960px;
+    /* max-height : 960px; */
     background-color: white;
+
+        /* 스크롤을 허용하기 위한 추가 스타일 */
+    
+}
+
+.scroll {
+  max-height: 90vh; /* 화면 높이의 90%로 제한 */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    overflow-x: hidden; /* 가로 스크롤 숨김 */
 }
 
 .instaPreview {
