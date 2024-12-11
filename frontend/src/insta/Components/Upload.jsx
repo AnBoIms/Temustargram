@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import {useLocation, useNavigate } from "react-router-dom";
 import tempImg from "./Image/temp2.jpg";
 
+
 const Logo = () => (
   <svg className="icon" x="0px" y="0px" viewBox="0 0 24 24">
     <path fill="transparent" d="M0,0h24v24H0V0z" />
@@ -19,7 +20,7 @@ function UploadModal({ onClose }) {
   const [isActive, setActive] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
-  const [isUploaded, setIsUploaded] = useState(true);  // 업로드 완료 상태 관리
+  const [isUploaded, setIsUploaded] = useState(false);  // 업로드 완료 상태 관리
 
   const [objects, setObjects] = useState([]); // 객체 데이터 추가
   const [selectedObjectIds, setSelectedObjectIds] = useState([]); // 선택된 객체 ID 배열
@@ -36,42 +37,7 @@ function UploadModal({ onClose }) {
     event.preventDefault();
   };
 
-  useEffect(() => {
-  //   if (location.state && location.state.image && location.state.coor) {
-  //     const base64Image = location.state.image;
 
-  //     // base64 형식의 이미지 처리
-  //     if (!base64Image.startsWith("data:image/")) {
-  //       setImagePreview(`data:image/png;base64,${base64Image}`);
-  //     } else {
-  //       setImagePreview(base64Image);
-  //     }
-
-  //     setObjects(location.state.coor); // 전달된 객체 데이터 설정
-  //     setResponseMessage(""); // 초기화
-  //   } else {
-  //     setResponseMessage("이미지 데이터가 전달되지 않았습니다/.");
-  //   }
-  // }, [location.state]);
-  //------------------------------- 위아래로 주석 풀기/채우기
-    setImagePreview(tempImg);
-    setObjects([
-      // 임시 객체 데이터 추가
-      {
-        id: 1,
-        polygon: [
-          [50, 50],
-          [500, 50],
-          [500, 500],
-          [50, 500],
-        ],
-        // type: "id_card"
-        type: "sign"
-      },
-    ]);
-    setError("이미지 데이터가 전달되지 않았습니다.");
-  }, []);
-  // -----------------------------------
 
   const processFile = (file) => {
     const { size: byteSize, type } = file;
@@ -135,6 +101,12 @@ function UploadModal({ onClose }) {
         const result = await response.json();
         console.log('Response JSON:', result);
 
+        if (result.img) {
+          setImagePreview(`data:image/png;base64,${result.img}`);
+          setObjects(result.objects); // 전달된 객체 데이터 설정
+
+        }
+        
         setIsUploaded(true);
         setResponseMessage(`Upload successful: ${result.message}`);
       } else {
@@ -236,7 +208,7 @@ function UploadModal({ onClose }) {
 
       if (response.ok) {
         setServerMessage(data.message); // 서버의 성공 메시지 표시
-        navigate("/", { state: { result: data.result } }); // result를 MainFeed로 전달
+        navigate("/instaOutput", { state: { result: data.result } }); // result를 MainFeed로 전달
         console.log("Server로 보냈음");
         onClose(); // 서버 응답이 성공하면 onClose 호출
 

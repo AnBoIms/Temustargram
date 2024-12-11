@@ -13,7 +13,7 @@ import pangpang from "../assets/pang.png";
 import downloadLogo from "../assets/downloadLogo.png";
 
 // kakao 기능 동작을 위해 넣어준다.
-const { Kakao } = window;
+// const { Kakao } = window;
 
 const Output = () => {
     const imgRef = useRef(null);
@@ -26,18 +26,18 @@ const Output = () => {
 
     const buttonRef = useRef(null); // 여기서 buttonRef를 정의합니다.
 
-    const realUrl = "http://localhost:3000" //나중에 배포시에 주소 바꾸기
-    // 로컬 주소 (localhost 3000 같은거)
-    const resultUrl = window.location.href;
+    // const realUrl = "http://localhost:3000" //나중에 배포시에 주소 바꾸기
+    // // 로컬 주소 (localhost 3000 같은거)
+    // const resultUrl = window.location.href;
 
-    useEffect(()=>{
-    	// init 해주기 전에 clean up 을 해준다.
-        Kakao.cleanup();
-        // 자신의 js 키를 넣어준다.
-        Kakao.init('c2cbb14eb64047ab9fe34925c8db79ad');
-        // 잘 적용되면 true 를 뱉는다.
-        console.log(Kakao.isInitialized());
-    },[]);
+    // useEffect(()=>{
+    // 	// init 해주기 전에 clean up 을 해준다.
+    //     Kakao.cleanup();
+    //     // 자신의 js 키를 넣어준다.
+    //     Kakao.init('c2cbb14eb64047ab9fe34925c8db79ad');
+    //     // 잘 적용되면 true 를 뱉는다.
+    //     console.log(Kakao.isInitialized());
+    // },[]);
 
     
 
@@ -83,29 +83,29 @@ const Output = () => {
         });
     };
 
-    const shareKakao = () =>{
+    // const shareKakao = () =>{
 
-        Kakao.Share.sendDefault({
-            objectType: 'feed',
-            content: {
-                title: '개인정보 안보임스',
-                description: '개인정보 안보임스',
-                imageUrl:
-                'https://mud-kage.kakao.com/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
-                link: {
-                    mobileWebUrl: realUrl,
-                },
-            },
-            buttons: [
-                {
-                    title: '사진 가리러 가기',
-                    link: {
-                    mobileWebUrl: realUrl,
-                    },
-                },
-                ],
-            });
-    }
+    //     Kakao.Share.sendDefault({
+    //         objectType: 'feed',
+    //         content: {
+    //             title: '개인정보 안보임스',
+    //             description: '개인정보 안보임스',
+    //             imageUrl:
+    //             'https://mud-kage.kakao.com/dn/NTmhS/btqfEUdFAUf/FjKzkZsnoeE4o19klTOVI1/openlink_640x640s.jpg',
+    //             link: {
+    //                 mobileWebUrl: realUrl,
+    //             },
+    //         },
+    //         buttons: [
+    //             {
+    //                 title: '사진 가리러 가기',
+    //                 link: {
+    //                 mobileWebUrl: realUrl,
+    //                 },
+    //             },
+    //             ],
+    //         });
+    // }
 
     return (
         <div>

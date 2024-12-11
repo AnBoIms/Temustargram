@@ -17,7 +17,10 @@ import talk from "./Image/talk.png";
 import share from "./Image/share.png";
 import bookmark from "./Image/bookmark.png";
 
-const MainFeed = ({ location }) => {
+import MainNav from "./InstaNav";
+
+
+const OutputFeed = ({ location }) => {
   const [error, setError] = useState(null); // 에러 상태
   const [comment, setComment] = useState(""); // input 값
   const [comments, setComments] = useState([]); // 입력된 댓글 배열
@@ -40,19 +43,19 @@ const MainFeed = ({ location }) => {
     return arr.map((cmt, index) => <CmtBox key={index} data={cmt} />);
   };
 
-  // useEffect(() => {
-  //   const base64Image = location?.state?.result || defaultImage;
+  useEffect(() => {
+    const base64Image = location?.state?.result || defaultImage;
 
-  //   if (!base64Image.startsWith("data:image/")) {
-  //     setImageSrc(`data:image/png;base64,${base64Image}`);
-  //   } else {
-  //     setImageSrc(base64Image);
-  //   }
+    if (!base64Image.startsWith("data:image/")) {
+      setImageSrc(`data:image/png;base64,${base64Image}`);
+    } else {
+      setImageSrc(base64Image);
+    }
 
-  //   if (!location.state || !location.state.result) {
-  //     setError(defaultError); // 기본 에러 메시지 설정
-  //   }
-  // }, [location.state]);
+    if (!location.state || !location.state.result) {
+      setError(defaultError); // 기본 에러 메시지 설정
+    }
+  }, [location.state]);
 //-----------------------------------------
     //   setImageSrc(profileImg);
     // }, [location]);
@@ -80,19 +83,21 @@ const MainFeed = ({ location }) => {
   //   }
   // }, [location]);
 
-  // useEffect(() => {
-  //   console.log("Image source updated:", imageSrc);
-  // }, [imageSrc]);
+  useEffect(() => {
+    console.log("Image source updated:", imageSrc);
+  }, [imageSrc]);
   
-  // const handleUploadResponse = (response) => {
-  //   if (response && response.image) {
-  //     setImageSrc(response.image); // 서버에서 받은 이미지 URL 또는 Base64 문자열 반영
-  //   } else {
-  //     setError("업로드된 이미지가 유효하지 않습니다.");
-  //   }
-  // };
+  const handleUploadResponse = (response) => {
+    if (response && response.image) {
+      setImageSrc(response.image); // 서버에서 받은 이미지 URL 또는 Base64 문자열 반영
+    } else {
+      setError("업로드된 이미지가 유효하지 않습니다.");
+    }
+  };
 //-----------------------------------------------------------
   return (
+    <div>
+      <MainNav />
       <section className="main2">
         <article>
           <div className="feed1">
@@ -132,7 +137,7 @@ const MainFeed = ({ location }) => {
                 <div className="comment-box">
                   <div>
                     <span className="comment-id">dltnwjd22</span>
-                    <span>언니잠싀만!!!!!! 냄새맛집이라고</span>
+                    <span>인스타 결과창</span>
                   </div>
                   <div className="comment-view">댓글 2개 모두 보기</div>
                   <div className="addComment">
@@ -182,8 +187,9 @@ const MainFeed = ({ location }) => {
         </article>
         <MainRight />
       </section>
+    </div>
   );
   
 }
 
-export default MainFeed;
+export default OutputFeed;
