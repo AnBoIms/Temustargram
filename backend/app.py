@@ -145,7 +145,7 @@ def load_result():
                 processed_results = process_ocr_results(ocr_results)
                 image = cv2.imread(cropped_image_path)
                 
-                if not processed_results["name"] and not processed_results["resident_id"] and not processed_results["address"]:
+                if not processed_results["name"] or not processed_results["resident_id"] or not processed_results["address"]:
                     success = apply_blur(cropped_image_path, cropped_image_path)
                     if success:
                         app.logger.info(f"Blur process completed for {cropped_image_path}")
