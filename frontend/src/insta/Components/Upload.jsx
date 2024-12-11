@@ -28,6 +28,7 @@ function UploadModal({ onClose }) {
   const [error, setError] = useState(""); // 에러 메시지
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 추가
   const [serverMessage, setServerMessage] = useState(""); // 서버 응답 메시지
+  const navigate = useNavigate();
 
   const handleDragStart = () => setActive(true);
   const handleDragEnd = () => setActive(false);
@@ -36,40 +37,40 @@ function UploadModal({ onClose }) {
   };
 
   useEffect(() => {
-  //   if (location.state && location.state.image && location.state.coor) {
-  //     const base64Image = location.state.image;
+    if (location.state && location.state.image && location.state.coor) {
+      const base64Image = location.state.image;
 
-  //     // base64 형식의 이미지 처리
-  //     if (!base64Image.startsWith("data:image/")) {
-  //       setImagePreview(`data:image/png;base64,${base64Image}`);
-  //     } else {
-  //       setImagePreview(base64Image);
-  //     }
+      // base64 형식의 이미지 처리
+      if (!base64Image.startsWith("data:image/")) {
+        setImagePreview(`data:image/png;base64,${base64Image}`);
+      } else {
+        setImagePreview(base64Image);
+      }
 
-  //     setObjects(location.state.coor); // 전달된 객체 데이터 설정
-  //     setResponseMessage(""); // 초기화
-  //   } else {
-  //     setResponseMessage("이미지 데이터가 전달되지 않았습니다/.");
-  //   }
-  // }, [location.state]);
+      setObjects(location.state.coor); // 전달된 객체 데이터 설정
+      setResponseMessage(""); // 초기화
+    } else {
+      setResponseMessage("이미지 데이터가 전달되지 않았습니다/.");
+    }
+  }, [location.state]);
   //------------------------------- 위아래로 주석 풀기/채우기
-    setImagePreview(tempImg);
-    setObjects([
-      // 임시 객체 데이터 추가
-      {
-        id: 1,
-        polygon: [
-          [50, 50],
-          [500, 50],
-          [500, 500],
-          [50, 500],
-        ],
-        // type: "id_card"
-        type: "sign"
-      },
-    ]);
-    setError("이미지 데이터가 전달되지 않았습니다.");
-  }, []);
+  //   setImagePreview(tempImg);
+  //   setObjects([
+  //     // 임시 객체 데이터 추가
+  //     {
+  //       id: 1,
+  //       polygon: [
+  //         [50, 50],
+  //         [500, 50],
+  //         [500, 500],
+  //         [50, 500],
+  //       ],
+  //       // type: "id_card"
+  //       type: "sign"
+  //     },
+  //   ]);
+  //   setError("이미지 데이터가 전달되지 않았습니다.");
+  // }, []);
   // -----------------------------------
 
   const processFile = (file) => {
@@ -231,9 +232,12 @@ function UploadModal({ onClose }) {
       });
 
       const data = await response.json();
+      console.log("Server로 보냈음2");
 
       if (response.ok) {
         setServerMessage(data.message); // 서버의 성공 메시지 표시
+        navigate("/", { state: { result: data.result } }); // result를 MainFeed로 전달
+        console.log("Server로 보냈음");
         onClose(); // 서버 응답이 성공하면 onClose 호출
 
         // navigate("/Output", { state: { result: data.result } }); // Output 페이지로 결과 전달
@@ -262,24 +266,24 @@ function UploadModal({ onClose }) {
                   <h3>잠시만 기다려주세요...</h3>
                 </div>
               )}
-              <div>
-                <h3>개인정보를 가진 객체가 검출되었어요!</h3>
-                <div>
-                  <h3>사진에 표시된<br />객체들 중<br />가리고 싶은 대상을<br />선택해주세요.</h3>
+              <div className = "scroll">
+                  <h3>개인정보를 가진 객체가 검출되었어요!</h3>
+                  <h4>사진에 표시된 객체들 중<br />가리고 싶은 대상을 선택해주세요.</h4>
                   <div className="selectImg">
                     <canvas ref={canvasRef} className="select_preview" onClick={handleCanvasClick} />
                   </div>
-                </div>
-                <div>
+                {/* <div>
                   <p>{responseMessage}</p>
-                </div>
+                </div> */}
                 <div>
-                  <button onClick={() => handleSendToServer(onClose)}>Upload</button>
+                  <button className="upload-btn" onClick={() => handleSendToServer(onClose)}>Upload</button>
+                  <button onClick={onClose} className="upload-btn">닫기</button>
+
                 </div>
               </div>
             </div>
 
-          ) : (  // 이 괄호는 위의 조건문을 닫고, else 부분을 시작하는 괄호입니다.
+          ) : (  // upload 컴포넌트
               <div>
                 <div className="alert">
                   <h2>개인정보가 포함 여부를 검사할 사진을 선택해주세요.</h2>
@@ -311,16 +315,17 @@ function UploadModal({ onClose }) {
                   </label>
                 </div>
                 <div>
-                  <button onClick={handleSubmit} className="upload_button">
+                  <button onClick={handleSubmit} className="upload-btn">
                     이미지 제출
                   </button>
+                  <button onClick={onClose} className="upload-btn">닫기</button>
+
                 </div>
               </div>
           )}  {/* 여기에서 조건문 끝 */}
           
           {responseMessage && <div id="responseMessage">{responseMessage}</div>}
         </div>
-        <button onClick={onClose}>닫기</button>
       </div>
     </div>
   );

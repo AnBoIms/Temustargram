@@ -118,7 +118,7 @@ const UploadBox = () => {
       ) : (
         <div className="container">
           <div className = "alert">
-            <h2>개인정보가 포함 여부를 검사할 사진을 선택해주세요.</h2>
+            <h2>개인정보 포함 여부를 검사할 사진을 선택해주세요.</h2>
           </div>
           <div>
               <label
