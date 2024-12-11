@@ -16,7 +16,7 @@ const MainNav = () => {
     navigate("/");
   };
   const handleGoToInsta = () => {
-    navigate("/insta");
+    navigate("/instaMain");
   };
   const handleGoToGpt = () => {
     navigate("/gpt");
