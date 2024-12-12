@@ -2,7 +2,7 @@ import { Component } from "react";
 import "../pages/Common.css";
 import "../pages/InstaMain.css";
 
-import profileImg from "./Image/feed1-profile.jpg";
+// import profileImg from "./Image/feed1-profile.jpg";
 import tenwook from "./Image/10wook.jpg";
 import dltnwjd22 from "./Image/dltnwjd22.jpg";
 import bomun from "./Image/bomunstella.jpg";

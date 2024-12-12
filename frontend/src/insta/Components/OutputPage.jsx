@@ -7,11 +7,11 @@ import "../pages/InstaMain.css";
 import MainRight from "./MainRight";
 import CmtBox from "./CmtBox";
 
-import profileImg from "./Image/feed1-profile.jpg";
+import profileImg from "./Image/10wook.jpg";
 import dltnwjd22 from "./Image/dltnwjd22.jpg";
 
 import threeDot from "./Image/three-dot.png";
-import feedMain from "./Image/feed1-main.jpg";
+// import feedMain from "./Image/feed1-main.jpg";
 import heart from "./Image/heart.png";
 import talk from "./Image/talk.png";
 import share from "./Image/share.png";
