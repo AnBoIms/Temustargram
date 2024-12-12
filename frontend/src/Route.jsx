@@ -3,7 +3,6 @@ import ImageUpload from "./components/ImageUpload";
 import Select from "./components/Select";
 import Output from "./components/Output";
 import InstaMain from "./insta/pages/InstaMain"; // insta 관련 컴포넌트 임포트
-import GptMain from "./gpt/src/GptMain"; // insta 관련 컴포넌트 임포트
 import OutputPage from "./insta/Components/OutputPage";
 
 const AppRoutes = () => {
