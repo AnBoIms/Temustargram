@@ -5,7 +5,8 @@
 ---
 
 ## **PreView**
-*Prototype image 넣어주세요*
+![9dhnxh](https://github.com/user-attachments/assets/c112defd-ad71-4f4c-b142-c1dc949e9878)
+
 
 ---
 
