@@ -1,7 +1,9 @@
 # ✨ **Temustargram**
 
 **Temustargram**은 안보임스 프로젝트의 배포용 레포지토리입니다.
-
+---
+## **배포 링크**
+https://13b5465f1158.ngrok.app
 ---
 
 ## **PreView**
@@ -43,5 +45,3 @@ docker-compose up --build
 ```
 
 ---
-## **배포 링크**
-https://84492c60cb44.ngrok.app 
