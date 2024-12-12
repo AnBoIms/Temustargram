@@ -7,7 +7,7 @@ import "../pages/InstaMain.css";
 import MainRight from "./MainRight";
 import CmtBox from "./CmtBox";
 
-import profileImg from "./Image/feed1-profile.jpg";
+import profileImg from "./Image/firstFeed.jpg";
 import dltnwjd22 from "./Image/dltnwjd22.jpg";
 
 import threeDot from "./Image/three-dot.png";
@@ -128,29 +128,32 @@ const MainFeed = ({ location }) => {
                     <img src={bookmark} />
                   </button>
                 </section>
-                <section className="like">좋아요 1,063개</section>
+                <section className="like">좋아요 33개</section>
                 <div className="comment-box">
                   <div>
                     <span className="comment-id">dltnwjd22</span>
-                    <span>언니잠싀만!!!!!! 냄새맛집이라고</span>
+                    <span>이사완료!!!</span>
                   </div>
-                  <div className="comment-view">댓글 2개 모두 보기</div>
+                  <div className="comment-view">댓글 3개 모두 보기</div>
                   <div className="addComment">
                     <div className="comment-list">
                       <span className="comment-id">orhj_0612</span>
-                      <span className="comment-text">아 저기 어디더라;; 다 가려놨냐</span>
+                    <span className="comment-text">
+                      영욱빌라 아님?? 
+                      </span>
                       <img src={heart} />
                     </div>
                     <div className="comment-list">
                       <span className="comment-id">10wook._.0912</span>
                       <span className="comment-text">
-                        신분증 올린줄 알고 놀랐는데 다 가려져있네                      </span>
+                      신분증을 누가 핸드폰 뒤에 들고다녀;; 주민번호 다털림 ㅅㄱ
+                    </span>
                       <img src={heart} />
                     </div>
                     <div className="comment-list">
                       <span className="comment-id">bonumstella</span>
                       <span className="comment-text">
-                      세상 좋아졌다 개인정보 다 가려주네;;
+                        어딘지 알겠다 바로 갈게~
                       </span>
                       <img src={heart} />
                     </div>
