@@ -1,6 +1,6 @@
 import { Component } from "react";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import "../pages/Common.css";
 import "../pages/InstaMain.css";
@@ -20,7 +20,9 @@ import bookmark from "./Image/bookmark.png";
 import MainNav from "./InstaNav";
 
 
-const OutputFeed = ({ location }) => {
+const OutputFeed = () => {
+  const location = useLocation(); // React Router의 useLocation 훅 사용
+
   const [error, setError] = useState(null); // 에러 상태
   const [comment, setComment] = useState(""); // input 값
   const [comments, setComments] = useState([]); // 입력된 댓글 배열
@@ -44,18 +46,22 @@ const OutputFeed = ({ location }) => {
   };
 
   useEffect(() => {
-    const base64Image = location?.state?.result || defaultImage;
 
-    if (!base64Image.startsWith("data:image/")) {
-      setImageSrc(`data:image/png;base64,${base64Image}`);
+    console.log("Location object:", location); // 디버깅용 로그
+    console.log("State result:", location?.state?.result); // 디버깅용 로그
+  
+    if (location.state && location.state.result) {
+        const base64Image = location.state.result;
+
+        if (!base64Image.startsWith("data:image/")) {
+            setImageSrc(`data:image/png;base64,${base64Image}`);
+        } else {
+            setImageSrc(base64Image);
+        }
     } else {
-      setImageSrc(base64Image);
+        setError("이미지가 전달되지 않았습니다.");
     }
-
-    if (!location.state || !location.state.result) {
-      setError(defaultError); // 기본 에러 메시지 설정
-    }
-  }, [location.state]);
+}, [location]);
 //-----------------------------------------
     //   setImageSrc(profileImg);
     // }, [location]);
@@ -88,9 +94,15 @@ const OutputFeed = ({ location }) => {
   }, [imageSrc]);
   
   const handleUploadResponse = (response) => {
-    if (response && response.image) {
-      setImageSrc(response.image); // 서버에서 받은 이미지 URL 또는 Base64 문자열 반영
+    console.log("Upload Response Received:", response); // 서버 응답 확인
+
+    if (response && response.result) {
+      console.log("Response contains valid image data:", response.result);
+
+      setImageSrc(response.result); // 서버에서 받은 이미지 URL 또는 Base64 문자열 반영
+      console.log("Updated imageSrc:", response.image); // 업데이트된 이미지 소스 로그
     } else {
+      console.error("Invalid image in response or response is undefined.");
       setError("업로드된 이미지가 유효하지 않습니다.");
     }
   };
@@ -137,9 +149,9 @@ const OutputFeed = ({ location }) => {
                 <div className="comment-box">
                   <div>
                     <span className="comment-id">dltnwjd22</span>
-                    <span>인스타 결과창</span>
+                    <span>이사완료!!!</span>
                   </div>
-                  <div className="comment-view">댓글 2개 모두 보기</div>
+                  <div className="comment-view">댓글 3개 모두 보기</div>
                   <div className="addComment">
                     <div className="comment-list">
                       <span className="comment-id">orhj_0612</span>

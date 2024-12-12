@@ -63,7 +63,7 @@ def process_ocr_results(ocr_results):
                 continue
         
         # 주민등록번호 추출
-        if re.match(r'^[0-9A-Za-z가-힣\-.,!?@#$%^&*()_+=]+$', text_cleaned):
+        if re.match(r'^[0-9A-Za-z가-힣\-.,!?@#$%^&*()_+=\[\]]+$', text_cleaned):
             digit_count = len(re.findall(r'\d', text_cleaned))
             if digit_count >= 2:   
                 if not first_resident_id_box:
